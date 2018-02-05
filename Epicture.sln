@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27130.2027
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Epicture", "Epicture\Epicture.csproj", "{819D9715-39A1-4352-AD09-55F817EB460A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{819D9715-39A1-4352-AD09-55F817EB460A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{819D9715-39A1-4352-AD09-55F817EB460A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{819D9715-39A1-4352-AD09-55F817EB460A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{819D9715-39A1-4352-AD09-55F817EB460A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F40D7681-DB85-4C76-8EB6-B86F8768E379}
+	EndGlobalSection
+EndGlobal
