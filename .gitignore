@@ -39,7 +39,9 @@ Engine/lib/*
 .vscode/
 *.sln
 *.log
-*.vs
+*.vs/
+.vs/*
+.vs/Epicture
 .vscode
 *.vcxproj
 *.filters
