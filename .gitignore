@@ -36,11 +36,10 @@
 bin/
 build/
 Engine/lib/*
-.vs/
 .vscode/
 *.sln
 *.log
-.vs
+*.vs
 .vscode
 *.vcxproj
 *.filters
@@ -48,6 +47,7 @@ Engine/lib/*
 Desktop.ini
 *.user
 *.sh
+obj/
 
 
 cmake-build-debug
