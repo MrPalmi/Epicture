@@ -18,11 +18,12 @@ namespace Epicture
         }
 
         public FlickerManager flicker;
+        public UserManager user;
 
         private Managers()
         {
             flicker = new FlickerManager();
+            user = new UserManager();
         }
-
     }
 }
