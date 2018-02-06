@@ -1,14 +1,12 @@
-﻿using FlickrNet;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Media;
+﻿using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Drawing;
+using System.Windows;
+using System.Net;
+using FlickrNet;
+using System;
 
 namespace Epicture
 {
@@ -19,7 +17,7 @@ namespace Epicture
     {
         public Photo photo;
 
-        public ImageInfo(Photo photo_)
+		public ImageInfo(Photo photo_)
         {
             InitializeComponent();
             photo = photo_;
@@ -68,5 +66,22 @@ namespace Epicture
             }
             Managers.Instance.flicker.SetFavorite(photo.PhotoId);
         }
-    }
+
+		private void DownloadImage(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				MessageBox.Show(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\n\n" + photo.LargeUrl + "\n\n" + photo.Title);
+				using (WebClient client = new WebClient())
+					client.DownloadFile(new Uri(photo.LargeUrl), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" +  photo.Title + ".jpg");
+			}
+			catch (ExternalException)
+			{
+				//Something is wrong with Format -- Maybe required Format is not 
+				// applicable here
+				MessageBox.Show("Can't download the picture");
+			}
+			MessageBox.Show("Added photo to Pictures user folder");
+		}
+	}
 }
