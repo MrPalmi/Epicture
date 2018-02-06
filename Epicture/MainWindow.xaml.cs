@@ -14,10 +14,13 @@ namespace Epicture
         {
             InitializeComponent();
             Managers.Instance.flicker.Connect();
+            UserInfo.Text = Managers.Instance.user.UserName;
         }
 
         public void Search(string searchTerm, int numPage, int imagePerPage)
         {
+            if (String.IsNullOrEmpty(searchTerm))
+                return;
             var options = new PhotoSearchOptions { Tags = searchTerm, PerPage = imagePerPage, Page = numPage };
             PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
 
@@ -62,10 +65,10 @@ namespace Epicture
 
         private void SearchFavoris(object sender, RoutedEventArgs e)
         {
-            if (Managers.Instance.flicker.userID != null && Managers.Instance.flicker.userID != "")
+            if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
             {
                 Managers.Instance.flicker.page = 1;
-                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetPublicList(Managers.Instance.flicker.userID, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetPublicList(Managers.Instance.flicker.accessToken.UserId, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
                 Pannel.Children.Clear();
 
                 foreach (Photo photo in favoris)
@@ -79,11 +82,22 @@ namespace Epicture
         private void AskToken(object sender, RoutedEventArgs e)
         {
             Managers.Instance.flicker.AskToken();
+            ValidationToken.Visibility = Visibility.Visible;
+            ValidateTokenButton.Visibility = Visibility.Visible;
+            AskTokenButton.Visibility = Visibility.Collapsed;
         }
 
         private void ValidateToken(object sender, RoutedEventArgs e)
         {
-            Managers.Instance.flicker.ValidateToken(ValidationToken.Text);
+            if (Managers.Instance.flicker.ValidateToken(ValidationToken.Text))
+                FavorisSearch.Visibility = Visibility.Visible;
+            else
+                ValidationToken.Visibility = Visibility.Visible;
+
+            ValidationToken.Visibility = Visibility.Collapsed;
+            ValidateTokenButton.Visibility = Visibility.Collapsed;
+
+            UserInfo.Text = Managers.Instance.user.UserName;
         }
     }
 }

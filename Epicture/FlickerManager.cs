@@ -17,7 +17,7 @@ namespace Epicture
         public int page;
 
         private OAuthRequestToken requestToken;
-        private OAuthAccessToken accessToken;
+        public OAuthAccessToken accessToken;
 
         public FlickerManager()
         {
@@ -61,11 +61,15 @@ namespace Epicture
                 MessageBox.Show("You must paste the verifier code into the textbox above.");
                 return false;
             }
+
             Flickr f = Managers.Instance.flicker.flickr;
             try
             {
                 accessToken = f.OAuthGetAccessToken(requestToken, txt);
                 f.OAuthAccessToken = accessToken.Token;
+                Managers.Instance.user.UserName = accessToken.FullName;
+                Managers.Instance.user.Token = accessToken.Token;
+                Managers.Instance.user.Connected = true;
                 MessageBox.Show("Successfully authenticated as " + accessToken.FullName);
             }
             catch (FlickrApiException ex)
