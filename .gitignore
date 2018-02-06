@@ -40,7 +40,7 @@ Engine/lib/*
 .vscode/
 *.sln
 *.log
-.vs
+*.vs
 .vscode
 *.vcxproj
 *.filters

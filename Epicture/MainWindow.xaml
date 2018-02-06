@@ -31,7 +31,13 @@
                 </Grid.RowDefinitions>
 
                 <Button Name="AskTokenButton" Grid.Row="0" Click="AskToken">Connect</Button>
-                <TextBox Name="ValidationToken" Grid.Row="1" Visibility="Collapsed"></TextBox>
+                <TextBox Name="ValidationToken" Grid.Row="1" Visibility="Collapsed"
+                         FontSize="15"
+                         FontFamily="Roboto Light"
+                         Foreground="LightGray"
+                         Padding="5,5,5,5"
+                         TextAlignment="Center"
+                         ></TextBox>
                 <Button Name="ValidateTokenButton" Grid.Row="2" Click="ValidateToken" Visibility="Collapsed">Validate</Button>
 
             </Grid>
@@ -58,8 +64,8 @@
                 Name="search"
                 FontSize="25"
                 FontFamily="Roboto Light"
-                Padding="5,5,5,5"
                 Foreground="LightGray"
+                Padding="5,5,5,5"
                 KeyUp="Search"
                 Margin="10,10,10,0"></TextBox>
             <Grid Grid.Row="1">
