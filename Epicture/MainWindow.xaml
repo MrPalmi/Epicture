@@ -15,22 +15,36 @@
         <Grid Name="LeftPannel" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
+                <TextBlock Name="UserInfo" Margin="10,10,10,10"></TextBlock>
+            </Grid>
+            
+            <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
+                <Button Name="AskTokenButton" Grid.Row="0" Click="AskToken">Connect</Button>
+                <TextBox Name="ValidationToken" Grid.Row="1" Visibility="Collapsed"></TextBox>
+                <Button Name="ValidateTokenButton" Grid.Row="2" Click="ValidateToken" Visibility="Collapsed">Validate</Button>
+
+            </Grid>
+
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+
                 <TextBox Grid.Row="0" Padding="5,5,0,0" Name="UserName"></TextBox>
-                <Grid Grid.Row="1">
-                    <Button Name="DisconnectButton" Click="Disconnect" Visibility="Collapsed">Disconnect</Button>
-                    <Button Name="ConnectButton" Click="Connect">Connect</Button>
-                </Grid>
-                <Button Grid.Row="2" Click="SearchFavoris">Favoris</Button>
+                <Button Name="FavorisSearch" Grid.Row="1" Click="SearchFavoris" Visibility="Collapsed">Favoris</Button>
+                
             </Grid>
         </Grid>
 

@@ -1,5 +1,7 @@
 ﻿
 using FlickrNet;
+using System;
+using System.Windows;
 
 namespace Epicture
 {
@@ -13,6 +15,9 @@ namespace Epicture
 
         public int imagePerPage;
         public int page;
+
+        private OAuthRequestToken requestToken;
+        public OAuthAccessToken accessToken;
 
         public FlickerManager()
         {
@@ -37,6 +42,42 @@ namespace Epicture
 
         public void UnsetFavorite()
         {
+        }
+
+        public void AskToken()
+        {
+            Flickr f = Managers.Instance.flicker.flickr;
+            requestToken = f.OAuthGetRequestToken("oob");
+
+            string url = f.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Write);
+
+            System.Diagnostics.Process.Start(url);
+        }
+
+        public bool ValidateToken(string txt)
+        {
+            if (String.IsNullOrEmpty(txt))
+            {
+                MessageBox.Show("You must paste the verifier code into the textbox above.");
+                return false;
+            }
+
+            Flickr f = Managers.Instance.flicker.flickr;
+            try
+            {
+                accessToken = f.OAuthGetAccessToken(requestToken, txt);
+                f.OAuthAccessToken = accessToken.Token;
+                Managers.Instance.user.UserName = accessToken.FullName;
+                Managers.Instance.user.Token = accessToken.Token;
+                Managers.Instance.user.Connected = true;
+                MessageBox.Show("Successfully authenticated as " + accessToken.FullName);
+            }
+            catch (FlickrApiException ex)
+            {
+                MessageBox.Show("Failed to get access token. Error message: " + ex.Message);
+                return false;
+            }
+            return true;
         }
 
     }
