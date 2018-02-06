@@ -35,13 +35,21 @@ namespace Epicture
             userID = flickr.PeopleFindByEmail(userMail).UserId;
         }
 
-        public void SetFavorite()
+        public void SetFavorite(string photoId)
         {
-            flickr.FavoritesAdd("");
+            flickr.FavoritesAdd(photoId);
         }
 
-        public void UnsetFavorite()
+        public void UnsetFavorite(string photoId)
         {
+            try
+            {
+                flickr.FavoritesRemove(photoId);
+            }
+            catch (FlickrException e)
+            {
+                MessageBox.Show("Can't remove photo from favorite : " + e.Message);
+            }
         }
 
         public void AskToken()
