@@ -76,22 +76,14 @@ namespace Epicture
             }
         }
 
-        private void Connect(object sender, RoutedEventArgs e)
+        private void AskToken(object sender, RoutedEventArgs e)
         {
-            if (UserName.Text != "")
-            {
-                Managers.Instance.flicker.ConnectUser(UserName.Text);
-                ConnectButton.Visibility = Visibility.Collapsed;
-                DisconnectButton.Visibility = Visibility.Visible;
-            }
+            Managers.Instance.flicker.AskToken();
         }
 
-        private void Disconnect(object sender, RoutedEventArgs e)
+        private void ValidateToken(object sender, RoutedEventArgs e)
         {
-            UserName.Text = "";
-            DisconnectButton.Visibility = Visibility.Collapsed;
-            ConnectButton.Visibility = Visibility.Visible;
+            Managers.Instance.flicker.ValidateToken(ValidationToken.Text);
         }
-
     }
 }

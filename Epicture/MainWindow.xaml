@@ -25,12 +25,21 @@
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
+                <Button Name="AskTokenButton" Grid.Row="0" Click="AskToken">Ask Token</Button>
+                <TextBox Name="ValidationToken" Grid.Row="1"></TextBox>
+                <Button Name="ValidateTokenButton" Grid.Row="2" Click="ValidateToken">Validate</Button>
+
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                
                 <TextBox Grid.Row="0" Padding="5,5,0,0" Name="UserName"></TextBox>
-                <Grid Grid.Row="1">
-                    <Button Name="DisconnectButton" Click="Disconnect" Visibility="Collapsed">Disconnect</Button>
-                    <Button Name="ConnectButton" Click="Connect">Connect</Button>
-                </Grid>
-                <Button Grid.Row="2" Click="SearchFavoris">Favoris</Button>
+                <Button Grid.Row="1" Click="SearchFavoris">Favoris</Button>
+                
             </Grid>
         </Grid>
 
