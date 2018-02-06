@@ -68,7 +68,7 @@ namespace Epicture
             if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
             {
                 Managers.Instance.flicker.page = 1;
-                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetPublicList(Managers.Instance.flicker.accessToken.UserId, DateTime.MinValue, DateTime.MaxValue, PhotoSearchExtras.All, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetList();
                 Pannel.Children.Clear();
 
                 foreach (Photo photo in favoris)
