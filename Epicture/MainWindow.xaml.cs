@@ -14,7 +14,16 @@ namespace Epicture
         {
             InitializeComponent();
             Managers.Instance.flicker.Connect();
-        }
+
+			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags);
+			
+			foreach (Photo photo in photos)
+			{
+				Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
+				LoadImage(photo);
+			}
+
+		}
 
         public void Search(string searchTerm, int numPage, int imagePerPage)
         {

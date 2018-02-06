@@ -1,7 +1,12 @@
 ﻿using FlickrNet;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -19,7 +24,7 @@ namespace Epicture
     {
         public Photo photo;
 
-        public ImageInfo(Photo photo_)
+		public ImageInfo(Photo photo_)
         {
             InitializeComponent();
             photo = photo_;
@@ -37,5 +42,22 @@ namespace Epicture
             Image.Source = imageSource;
             Title.Text = photo.Title;
         }
-    }
+
+		private void DownloadImage(object sender, RoutedEventArgs e)
+		{
+			try
+			{
+				MessageBox.Show(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\n\n" + photo.LargeUrl + "\n\n" + photo.Title);
+				using (WebClient client = new WebClient())
+					client.DownloadFile(new Uri(photo.LargeUrl), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" +  photo.Title + ".jpg");
+			}
+			catch (ExternalException)
+			{
+				//Something is wrong with Format -- Maybe required Format is not 
+				// applicable here
+				MessageBox.Show("Can't download the picture");
+			}
+			MessageBox.Show("Added photo to Pictures user folder");
+		}
+	}
 }

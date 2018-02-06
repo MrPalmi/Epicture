@@ -28,8 +28,10 @@
                 </Grid.ColumnDefinitions>
                 <Button Name="Download" FontFamily="Roboto Light" Grid.Column="1"
                         BorderThickness="0,0,0,0"
-                        Background="White">
+                        Background="White"
+                        Click="DownloadImage">
                     <fa:ImageAwesome Icon="Download" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
+                    
                 </Button>
                 <Button Name="Stars" FontFamily="Roboto Light" 
                         Grid.Column="2"
