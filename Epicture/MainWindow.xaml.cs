@@ -21,7 +21,7 @@ namespace Epicture
 
             foreach (Photo photo in photos)
                 LoadImage(photo);
-		}
+        }
 
         public void Search(string searchTerm, int numPage, int imagePerPage)
         {
@@ -49,23 +49,20 @@ namespace Epicture
 
         private void NextPage(object sender, RoutedEventArgs e)
         {
-            SearchMode();
             Managers.Instance.flicker.page += 1;
-            Search(search.Text, Managers.Instance.flicker.page, 30);
+            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
         }
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
-            SearchMode();
             Managers.Instance.flicker.page -= 1;
             if (Managers.Instance.flicker.page < 1)
                 Managers.Instance.flicker.page = 1;
-            Search(search.Text, Managers.Instance.flicker.page, 30);
+            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
         }
 
         private void Search(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            SearchMode();
             if (e.Key != System.Windows.Input.Key.Enter)
                 return;
 
@@ -147,8 +144,12 @@ namespace Epicture
 
         private void SearchMode()
         {
+            Managers.Instance.cache.ReloadFavoriteCache();
+
             ScrollPannel.Visibility = Visibility.Visible;
             Pannel.Visibility = Visibility.Visible;
+            Navigation.Visibility = Visibility.Visible;
+
             UploadForm.Visibility = Visibility.Collapsed;
         }
 
@@ -156,6 +157,8 @@ namespace Epicture
         {
             Pannel.Visibility = Visibility.Collapsed;
             ScrollPannel.Visibility = Visibility.Collapsed;
+            Navigation.Visibility = Visibility.Collapsed;
+
             UploadForm.Visibility = Visibility.Visible;
             Filename.Text = "";
             Title.Text = "";
