@@ -90,7 +90,7 @@ namespace Epicture
 
         public void Upload(string filename, string title, string description, bool public_)
         {
-            string photoId = flickr.UploadPicture(filename, title, description, null, public_, false, false);
+            flickr.UploadPicture(filename, title, description, null, public_, false, false);
         }
 
     }

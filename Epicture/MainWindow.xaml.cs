@@ -134,7 +134,7 @@ namespace Epicture
                 CheckPublic.IsChecked = true;
                 UploadProgress.Value = 0;
             }
-            catch (FlickrException ex)
+            catch (ArgumentException ex)
             {
                 System.Windows.MessageBox.Show("Error: " + ex.Message);
             }
@@ -157,6 +157,11 @@ namespace Epicture
             Pannel.Visibility = Visibility.Collapsed;
             ScrollPannel.Visibility = Visibility.Collapsed;
             UploadForm.Visibility = Visibility.Visible;
+            Filename.Text = "";
+            Title.Text = "";
+            Description.Text = "";
+            CheckPublic.IsChecked = true;
+            UploadProgress.Value = 0;
         }
 
         private void Explore(object sender, RoutedEventArgs e)
