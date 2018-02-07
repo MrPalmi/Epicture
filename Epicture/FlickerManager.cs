@@ -88,5 +88,10 @@ namespace Epicture
             return true;
         }
 
+        public void Upload(string filename, string title, string description, bool public_)
+        {
+            flickr.UploadPicture(filename, title, description, null, public_, false, false);
+        }
+
     }
 }
