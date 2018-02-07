@@ -26,23 +26,32 @@
                     <ColumnDefinition/>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="50"/>
+                    <ColumnDefinition Width="50"/>
                 </Grid.ColumnDefinitions>
-                <Button Name="Download" FontFamily="Roboto Light" Grid.Column="1"
+                <Button Name="Stars" FontFamily="Roboto Light" 
+                        Grid.Column="1"
                         BorderThickness="0,0,0,0"
                         Background="White"
+                        Click="Favorite"
+                        >
+                    <fa:ImageAwesome Name="StarsIcon"  Icon="Star" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
+                </Button>
+                <Button Name="Download" FontFamily="Roboto Light" Grid.Column="2"
+                        BorderThickness="0,0,0,0"
+                        Background="White"  
                         Click="DownloadImage"
                         MouseEnter="ImageAwesome_MouseEnter" 
                         MouseLeave="ImageAwesome_MouseLeave">
                     <fa:ImageAwesome Name="download" Icon="Download" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
 
                 </Button>
-                <Button Name="Stars" FontFamily="Roboto Light" 
-                        Grid.Column="2"
+                <Button Name="Indesirable" FontFamily="Roboto Light"
+                        Grid.Column="3"
                         BorderThickness="0,0,0,0"
                         Background="White"
                         Click="Favorite"
                         >
-                    <fa:ImageAwesome Name="StarsIcon"  Icon="Star" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
+                    <fa:ImageAwesome Name="IndesirableIcon"  Icon="Times" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
                 </Button>
             </Grid>
         </Grid>

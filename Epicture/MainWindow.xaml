@@ -32,9 +32,9 @@
 
                 <Button Name="AskTokenButton" Grid.Row="0" Click="AskToken">Connect</Button>
                 <TextBox Name="ValidationToken" Grid.Row="1" Visibility="Collapsed"
-                         FontSize="15"
+                         FontSize="18"
                          FontFamily="Roboto Light"
-                         Foreground="LightGray"
+                         Foreground="DarkGray"
                          Padding="5,5,5,5"
                          TextAlignment="Center"
                          ></TextBox>
@@ -44,12 +44,15 @@
 
             <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
-                    <RowDefinition/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <TextBox Grid.Row="0" Padding="5,5,0,0" Name="UserName"></TextBox>
+                <Button Name="Upload" Grid.Row="0" Click="UploadMode" Visibility="Collapsed">Upload</Button>
                 <Button Name="FavorisSearch" Grid.Row="1" Click="SearchFavoris" Visibility="Collapsed">Favoris</Button>
+                <Button Name="Indesirable" Grid.Row="2" Click="SearchIndesirable" Visibility="Collapsed">Indesirable</Button>
                 
             </Grid>
         </Grid>
@@ -74,11 +77,69 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
 
-                <ScrollViewer Name="Scroll" VerticalScrollBarVisibility="Auto" Grid.Row="0">
-                    <WrapPanel Name="Pannel" ItemHeight="300" ItemWidth="350">
-                    </WrapPanel>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Name="ScrollPannel" Visibility="Collapsed">
+                    <WrapPanel Name="Pannel" ItemHeight="300" ItemWidth="350" Visibility="Collapsed"/>
                 </ScrollViewer>
-                <Grid Grid.Row="1">
+
+                <Grid Name="UploadForm" Visibility="Visible">
+                    <Grid Margin="300,20">
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition Height="300"/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition Width="130"/>
+                            </Grid.ColumnDefinitions>
+                            <Label>File</Label>
+                            <TextBox Name="Filename" Grid.Row="1" Grid.Column="0" FontFamily="Roboto" Padding="10"></TextBox>
+                            <Button Click="Explore" Grid.Row="1" Grid.Column="1" FontFamily="Roboto">...</Button>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="10" >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label>Titre</Label>
+                            <TextBox Grid.Row="1" Name="Title" FontFamily="Roboto" Padding="10"></TextBox>
+                        </Grid>
+                        <Grid Grid.Row="2" Margin="10">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Label>Description</Label>
+                            <TextBox Grid.Row="1" Name="Description" FontFamily="Roboto" Padding="10"></TextBox>
+                        </Grid>
+
+                        <ProgressBar Name="UploadProgress"  Grid.Row="3" Margin="35"></ProgressBar>
+                        
+                        <Grid Grid.Row="4" Margin="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <CheckBox Name="CheckPublic" IsChecked="True" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" FontFamily="Roboto">
+                                <CheckBox.LayoutTransform>
+                                    <ScaleTransform ScaleX="2.5" ScaleY="2.5" />
+                                </CheckBox.LayoutTransform>
+                                Public
+                            </CheckBox>
+                            <Button Width="200" FontSize="30" FontFamily="Roboto" HorizontalAlignment="Right" Click="UploadImage">Validate</Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid Grid.Row="1" Name="Navigation" Visibility="Collapsed">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition/>
                         <ColumnDefinition/>

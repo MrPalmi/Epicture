@@ -62,6 +62,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="CacheManager.cs" />
     <Compile Include="UserManager.cs" />
     <Page Include="ImageInfo.xaml">
       <SubType>Designer</SubType>
