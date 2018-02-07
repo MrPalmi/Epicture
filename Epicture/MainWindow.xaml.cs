@@ -1,22 +1,28 @@
 ﻿using System.Windows;
 using FlickrNet;
 using System;
+using System.Collections.Generic;
 
 namespace Epicture
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
-    public partial class MainWindow : Window
-    {
+	/// <summary>
+	/// Interaction logic for MainWindow.xaml
+	/// </summary>
+	public partial class MainWindow : Window
+	{
 
-        public MainWindow()
-        {
-            InitializeComponent();
-            Managers.Instance.flicker.Connect();
+		public MainWindow()
+		{
+			InitializeComponent();
+			Managers.Instance.flicker.Connect();
 
-			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags);
-			
+			List<PhotoSearchExtras> xtras = new List<PhotoSearchExtras>();
+
+			xtras.Add(PhotoSearchExtras.Tags);
+			xtras.Add(PhotoSearchExtras.Description);
+
+			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
+
 			foreach (Photo photo in photos)
 			{
 				Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
@@ -26,87 +32,89 @@ namespace Epicture
 		}
 
 
-        public void Search(string searchTerm, int numPage, int imagePerPage)
-        {
-            if (String.IsNullOrEmpty(searchTerm))
-                return;
-            var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage , SafeSearch = SafetyLevel.Restricted};
-            PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
+		public void Search(string searchTerm, int numPage, int imagePerPage)
+		{
+			if (String.IsNullOrEmpty(searchTerm))
+				return;
+			var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
 
-            Pannel.Children.Clear();
+			Pannel.Children.Clear();
 
-            foreach (Photo photo in photos)
-            {
-                Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
-                LoadImage(photo);
-            }
-        }
+			foreach (Photo photo in photos)
+			{
+				Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
+				LoadImage(photo);
+			}
+		}
 
-        public void LoadImage(Photo photo)
-        {
-            ImageInfo imgProfil = new ImageInfo(photo);
-            Pannel.Children.Add(imgProfil);
-        }
+		public void LoadImage(Photo photo)
+		{
+			ImageInfo imgProfil = new ImageInfo(photo);
+			Pannel.Children.Add(imgProfil);
+		}
 
-        private void NextPage(object sender, RoutedEventArgs e)
-        {
-            Managers.Instance.flicker.page += 1;
-            Search(search.Text, Managers.Instance.flicker.page, 30);
-        }
+		private void NextPage(object sender, RoutedEventArgs e)
+		{
+			Managers.Instance.flicker.page += 1;
+			Search(search.Text, Managers.Instance.flicker.page, 30);
+			Scroll.ScrollToTop();
+		}
 
-        private void PrevPage(object sender, RoutedEventArgs e)
-        {
-            Managers.Instance.flicker.page -= 1;
-            if (Managers.Instance.flicker.page < 1)
-                Managers.Instance.flicker.page = 1;
-            Search(search.Text, Managers.Instance.flicker.page, 30);
-        }
+		private void PrevPage(object sender, RoutedEventArgs e)
+		{
+			Managers.Instance.flicker.page -= 1;
+			if (Managers.Instance.flicker.page < 1)
+				Managers.Instance.flicker.page = 1;
+			Search(search.Text, Managers.Instance.flicker.page, 30);
+			Scroll.ScrollToTop();
+		}
 
-        private void Search(object sender, System.Windows.Input.KeyEventArgs e)
-        {
-            if (e.Key != System.Windows.Input.Key.Enter)
-                return;
+		private void Search(object sender, System.Windows.Input.KeyEventArgs e)
+		{
+			if (e.Key != System.Windows.Input.Key.Enter)
+				return;
 
-            e.Handled = true;
-            Managers.Instance.flicker.page = 1;
-            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
-        }
+			e.Handled = true;
+			Managers.Instance.flicker.page = 1;
+			Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+		}
 
-        private void SearchFavoris(object sender, RoutedEventArgs e)
-        {
-            if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
-            {
-                Managers.Instance.flicker.page = 1;
-                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetList();
-                Pannel.Children.Clear();
+		private void SearchFavoris(object sender, RoutedEventArgs e)
+		{
+			if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
+			{
+				Managers.Instance.flicker.page = 1;
+				PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetList();
+				Pannel.Children.Clear();
 
-                foreach (Photo photo in favoris)
-                {
-                    Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
-                    LoadImage(photo);
-                }
-            }
-        }
+				foreach (Photo photo in favoris)
+				{
+					Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
+					LoadImage(photo);
+				}
+			}
+		}
 
-        private void AskToken(object sender, RoutedEventArgs e)
-        {
-            Managers.Instance.flicker.AskToken();
-            ValidationToken.Visibility = Visibility.Visible;
-            ValidateTokenButton.Visibility = Visibility.Visible;
-            AskTokenButton.Visibility = Visibility.Collapsed;
-        }
+		private void AskToken(object sender, RoutedEventArgs e)
+		{
+			Managers.Instance.flicker.AskToken();
+			ValidationToken.Visibility = Visibility.Visible;
+			ValidateTokenButton.Visibility = Visibility.Visible;
+			AskTokenButton.Visibility = Visibility.Collapsed;
+		}
 
-        private void ValidateToken(object sender, RoutedEventArgs e)
-        {
-            if (Managers.Instance.flicker.ValidateToken(ValidationToken.Text))
-                FavorisSearch.Visibility = Visibility.Visible;
-            else
-                ValidationToken.Visibility = Visibility.Visible;
+		private void ValidateToken(object sender, RoutedEventArgs e)
+		{
+			if (Managers.Instance.flicker.ValidateToken(ValidationToken.Text))
+				FavorisSearch.Visibility = Visibility.Visible;
+			else
+				ValidationToken.Visibility = Visibility.Visible;
 
-            ValidationToken.Visibility = Visibility.Collapsed;
-            ValidateTokenButton.Visibility = Visibility.Collapsed;
+			ValidationToken.Visibility = Visibility.Collapsed;
+			ValidateTokenButton.Visibility = Visibility.Collapsed;
 
-            UserInfo.Text = Managers.Instance.user.UserName;
-        }
-    }
+			UserInfo.Text = Managers.Instance.user.UserName;
+		}
+	}
 }

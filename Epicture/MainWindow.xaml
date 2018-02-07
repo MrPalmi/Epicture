@@ -74,7 +74,7 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
 
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0">
+                <ScrollViewer Name="Scroll" VerticalScrollBarVisibility="Auto" Grid.Row="0">
                     <WrapPanel Name="Pannel" ItemHeight="300" ItemWidth="350">
                     </WrapPanel>
                 </ScrollViewer>

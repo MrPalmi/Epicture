@@ -13,8 +13,8 @@ namespace Epicture
     /// <summary>
     /// Interaction logic for ImageInfo.xaml
     /// </summary>
-    public partial class ImageInfo : UserControl
-    {
+    public partial class ImageInfo : System.Windows.Controls.UserControl
+	{
         public Photo photo;
 
 		public ImageInfo(Photo photo_)
@@ -22,9 +22,9 @@ namespace Epicture
             InitializeComponent();
             photo = photo_;
             LoadImage();
-        }
+		}
 
-        private void LoadImage()
+		private void LoadImage()
         {
             BitmapImage bitmap = new BitmapImage();
             bitmap.BeginInit();
@@ -34,6 +34,7 @@ namespace Epicture
             ImageSource imageSource = bitmap;
             Image.Source = imageSource;
             Title.Text = photo.Title;
+			Description.Text = photo.Description;
 
             if (Managers.Instance.user.Connected)
             {
@@ -82,6 +83,28 @@ namespace Epicture
 				MessageBox.Show("Can't download the picture");
 			}
 			MessageBox.Show("Added photo to Pictures user folder");
+		}
+
+		private void Grid_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			Description.Visibility = Visibility.Visible;
+			Description.Foreground = new SolidColorBrush(Colors.White);
+			Description.Background.Opacity = 0.7;
+		}
+		private void Grid_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			Description.Visibility = Visibility.Hidden;
+		}
+
+		private void ImageAwesome_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			download.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 84, 145, 242));
+			Download.Background = new SolidColorBrush(Colors.White);
+		}
+
+		private void ImageAwesome_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			download.Foreground = new SolidColorBrush(Colors.LightGray);
 		}
 	}
 }
