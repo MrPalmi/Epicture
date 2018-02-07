@@ -8,19 +8,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid Background="White" Margin="5,5,5,5">
+        <Grid Background="White" Margin="5,5,5,5" MouseEnter="Grid_MouseEnter" MouseLeave="Grid_MouseLeave">
             <Grid.RowDefinitions>
                 <RowDefinition/>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0" Margin="20,20,20,20">
+            <Grid Grid.Row="0" Margin="10">
                 <Image Name="Image"></Image>
+                <TextBlock Name="Description" Visibility="Hidden" OpacityMask="#FF7C7C7C" Background="#FF999292" Padding="5,5,5,5" TextWrapping="Wrap"/>
             </Grid>
             <Grid Grid.Row="1">
                 <TextBlock Name="Title" FontFamily="Roboto Light" TextAlignment="Center" Padding="0,5,0,0" Margin="10,0,10,0" >Title</TextBlock>
             </Grid>
-            <Grid Grid.Row="2" Margin="10,10,10,5">
+            <Grid Grid.Row="2" Margin="10,0,10,5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition/>
                     <ColumnDefinition Width="50"/>
@@ -37,9 +38,11 @@
                 </Button>
                 <Button Name="Download" FontFamily="Roboto Light" Grid.Column="2"
                         BorderThickness="0,0,0,0"
-                        Background="White"
-                        Click="DownloadImage">
-                    <fa:ImageAwesome Icon="Download" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
+                        Background="White"  
+                        Click="DownloadImage"
+                        MouseEnter="ImageAwesome_MouseEnter" 
+                        MouseLeave="ImageAwesome_MouseLeave">
+                    <fa:ImageAwesome Name="download" Icon="Download" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="LightGray"/>
 
                 </Button>
                 <Button Name="Indesirable" FontFamily="Roboto Light"

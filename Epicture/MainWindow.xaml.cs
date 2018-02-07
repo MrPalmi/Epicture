@@ -17,7 +17,7 @@ namespace Epicture
             Managers.Instance.flicker.Connect();
             SearchMode();
 
-			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags);
+			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
 
             foreach (Photo photo in photos)
                 LoadImage(photo);
@@ -28,7 +28,8 @@ namespace Epicture
             SearchMode();
             if (String.IsNullOrEmpty(searchTerm))
                 return;
-            var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage , SafeSearch = SafetyLevel.Restricted};
+			var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+
             PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
 
             Pannel.Children.Clear();
@@ -51,7 +52,9 @@ namespace Epicture
         {
             Managers.Instance.flicker.page += 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
-        }
+			ScrollPannel.ScrollToTop();
+			    
+	}
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
@@ -59,7 +62,8 @@ namespace Epicture
             if (Managers.Instance.flicker.page < 1)
                 Managers.Instance.flicker.page = 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
-        }
+			ScrollPannel.ScrollToTop();
+			   }
 
         private void Search(object sender, System.Windows.Input.KeyEventArgs e)
         {
