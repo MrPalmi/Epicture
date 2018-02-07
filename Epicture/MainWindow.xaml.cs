@@ -28,7 +28,7 @@ namespace Epicture
             SearchMode();
             if (String.IsNullOrEmpty(searchTerm))
                 return;
-            var options = new PhotoSearchOptions { Tags = searchTerm, PerPage = imagePerPage, Page = numPage };
+            var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage , SafeSearch = SafetyLevel.Restricted};
             PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
 
             Pannel.Children.Clear();
