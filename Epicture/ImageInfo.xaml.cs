@@ -37,9 +37,7 @@ namespace Epicture
 
 			if (Managers.Instance.user.Connected)
 			{
-				var photos = Managers.Instance.flicker.flickr.FavoritesGetList(Managers.Instance.flicker.accessToken.UserId);
-
-				foreach (var it in photos)
+				foreach (var it in Managers.Instance.cache.Favorite)
 				{
 					if (it.PhotoId == photo.PhotoId)
 					{
@@ -54,9 +52,7 @@ namespace Epicture
 
 		private void Favorite(object sender, RoutedEventArgs e)
 		{
-			var photos = Managers.Instance.flicker.flickr.FavoritesGetList(Managers.Instance.flicker.accessToken.UserId);
-
-			foreach (var it in photos)
+			foreach (var it in Managers.Instance.cache.Favorite)
 			{
 				if (it.PhotoId == photo.PhotoId)
 				{
