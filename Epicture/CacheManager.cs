@@ -1,21 +1,19 @@
-﻿using FlickrNet;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using FlickrNet;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Epicture
 {
     class CacheManager
     {
         public List<Photo> Favorite;
-        public List<Photo> Indesirable;
+        public List<string> Indesirable;
 
         public CacheManager()
         {
             Favorite = new List<Photo>();
-            Indesirable = new List<Photo>();
+            Indesirable = new List<string>();
         }
 
         public bool LoadFavorite()
@@ -38,7 +36,7 @@ namespace Epicture
             if (Managers.Instance.user.Connected)
             {
                 foreach (var it in Favorite)
-                    Managers.Instance.flicker.flickr.FavoritesAdd(it.PhotoId);
+                    Managers.Instance.flicker.SetFavorite(it.PhotoId);
                 return true;
             }
             return false;
@@ -69,30 +67,47 @@ namespace Epicture
 
         public void LoadIndesirable()
         {
+            string text = "";
+
+            try
+            {
+                text = System.IO.File.ReadAllText("./Indesirable_Save.db");
+                Indesirable = text.Split(' ').ToList();
+            }
+            catch (FileNotFoundException)
+            {
+                return;
+            }
         }
 
         public void SaveIndesirable()
         {
+            string text = "";
+
+            foreach (var it in Indesirable)
+                text += it + " ";
+
+            File.WriteAllText("./Indesirable_Save.db", text);
         }
 
         public bool IsIndesirable(string id)
         {
-            if (Indesirable.FindIndex(x => x.PhotoId == id) == -1)
+            if (Indesirable.FindIndex(x => x == id) == -1)
                 return false;
             return true;
         }
 
-        public bool AddIndesirable(Photo photo)
+        public bool AddIndesirable(string photo)
         {
-            if (IsIndesirable(photo.PhotoId))
+            if (IsIndesirable(photo))
                 return false;
             Indesirable.Add(photo);
             return true;
         }
 
-        public bool RemoveIndesirable(Photo photo)
+        public bool RemoveIndesirable(string photo)
         {
-            if (!IsIndesirable(photo.PhotoId))
+            if (!IsIndesirable(photo))
                 return false;
             Indesirable.Remove(photo);
             return true;

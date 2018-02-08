@@ -41,9 +41,9 @@ namespace Epicture
             {
                 flickr.FavoritesAdd(photoId);
             }
-            catch (FlickrApiException e)
+            catch (FlickrApiException)
             {
-                MessageBox.Show(e.Message);
+                return;
             }
         }
 
@@ -53,9 +53,9 @@ namespace Epicture
             {
                 flickr.FavoritesRemove(photoId);
             }
-            catch (FlickrException e)
+            catch (FlickrException)
             {
-                MessageBox.Show(e.Message);
+                return;
             }
         }
 

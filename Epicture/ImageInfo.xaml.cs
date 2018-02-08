@@ -17,13 +17,14 @@ namespace Epicture
 	{
 		public Photo photo;
 
-		public ImageInfo(Photo photo_)
+        public ImageInfo(Photo photo_)
 		{
 			InitializeComponent();
 			photo = photo_;
 			LoadImage();
 		}
-		private void LoadImage()
+
+        private void LoadImage()
 		{
 			BitmapImage bitmap = new BitmapImage();
 			bitmap.BeginInit();
@@ -35,16 +36,28 @@ namespace Epicture
 			Title.Text = photo.Title;
 			Description.Text = photo.Description;
 
-			if (Managers.Instance.user.Connected)
+            if (Managers.Instance.user.Connected)
 			{
                 if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
                     StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
-                return;
 			}
-			Stars.Visibility = Visibility.Collapsed;
-		}
+            else
+    			Stars.Visibility = Visibility.Collapsed;
+            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+            {
+                if (Managers.Instance.user.AllowIndesirable)
+                {
+                    Background = new SolidColorBrush(Colors.IndianRed);
+                    IndesirableIcon.Foreground = new SolidColorBrush(Colors.Gray);
+                    Image.Visibility = Visibility.Collapsed;
+                    Stars.Visibility = Visibility.Collapsed;
+                }
+                else
+                    Visibility = Visibility.Hidden;
+            }
+        }
 
-		private void Favorite(object sender, RoutedEventArgs e)
+		private void FavoriteSetter(object sender, RoutedEventArgs e)
 		{
             if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
             {
@@ -54,6 +67,30 @@ namespace Epicture
             }
             Managers.Instance.cache.AddFavorite(photo);
             StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void IndesirableSetter(object sender, RoutedEventArgs e)
+        {
+            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+            {
+                Managers.Instance.cache.RemoveIndesirable(photo.PhotoId);
+                IndesirableIcon.Foreground = new SolidColorBrush(Colors.Gray);
+                Background = new SolidColorBrush(Colors.White);
+                Image.Visibility = Visibility.Visible;
+                if (Managers.Instance.user.Connected)
+                    Stars.Visibility = Visibility.Visible;
+                return;
+            }
+            Managers.Instance.cache.AddIndesirable(photo.PhotoId);
+            if (Managers.Instance.user.AllowIndesirable)
+            {
+                Background = new SolidColorBrush(Colors.IndianRed);
+                Image.Visibility = Visibility.Collapsed;
+                IndesirableIcon.Foreground = new SolidColorBrush(Colors.LightGray);
+                Stars.Visibility = Visibility.Collapsed;
+            }
+            else
+                Visibility = Visibility.Hidden;
         }
 
         private void DownloadImage(object sender, RoutedEventArgs e)
@@ -120,17 +157,21 @@ namespace Epicture
 
 		private void Indesirable_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
 		{
-			IndesirableIcon.Foreground = new SolidColorBrush(Colors.LightGray);
-		}
+            IndesirableIcon.Foreground = new SolidColorBrush(Colors.LightGray);
+            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+    			IndesirableIcon.Foreground = new SolidColorBrush(Colors.Gray);
+        }
 
-		private void Stars_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        private void Stars_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
 		{
 			StarsIcon.Foreground = new SolidColorBrush(Colors.Gold);
 		}
 
 		private void Stars_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
 		{
-			StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
-		}
-	}
+            StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
+            if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+    			StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+    }
 }
