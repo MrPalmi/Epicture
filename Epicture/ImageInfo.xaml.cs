@@ -106,12 +106,31 @@ namespace Epicture
 		private void ImageAwesome_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
 		{
 			download.Foreground = new SolidColorBrush(System.Windows.Media.Color.FromArgb(255, 84, 145, 242));
-			Download.Background = new SolidColorBrush(Colors.White);
 		}
 
 		private void ImageAwesome_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
 		{
 			download.Foreground = new SolidColorBrush(Colors.LightGray);
+		}
+
+		private void Indesirable_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			IndesirableIcon.Foreground = new SolidColorBrush(Colors.Red);
+		}
+
+		private void Indesirable_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			IndesirableIcon.Foreground = new SolidColorBrush(Colors.LightGray);
+		}
+
+		private void Stars_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			StarsIcon.Foreground = new SolidColorBrush(Colors.Gold);
+		}
+
+		private void Stars_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+		{
+			StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
 		}
 	}
 }
