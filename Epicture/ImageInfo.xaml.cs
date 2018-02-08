@@ -37,33 +37,26 @@ namespace Epicture
 
 			if (Managers.Instance.user.Connected)
 			{
-				foreach (var it in Managers.Instance.cache.Favorite)
-				{
-					if (it.PhotoId == photo.PhotoId)
-					{
-						StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
-						return;
-					}
-				}
+                if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+                    StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
+                return;
 			}
-			else
-				Stars.Visibility = Visibility.Collapsed;
+			Stars.Visibility = Visibility.Collapsed;
 		}
 
 		private void Favorite(object sender, RoutedEventArgs e)
 		{
-			foreach (var it in Managers.Instance.cache.Favorite)
-			{
-				if (it.PhotoId == photo.PhotoId)
-				{
-					Managers.Instance.flicker.UnsetFavorite(it.PhotoId);
-					return;
-				}
-			}
-			Managers.Instance.flicker.SetFavorite(photo.PhotoId);
-		}
+            if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+            {
+			    Managers.Instance.cache.RemoveFavorite(photo);
+                StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
+                return;
+            }
+            Managers.Instance.cache.AddFavorite(photo);
+            StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
+        }
 
-		private void DownloadImage(object sender, RoutedEventArgs e)
+        private void DownloadImage(object sender, RoutedEventArgs e)
 		{
 			try
 			{
