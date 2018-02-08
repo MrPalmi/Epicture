@@ -37,7 +37,14 @@ namespace Epicture
 
         public void SetFavorite(string photoId)
         {
-            flickr.FavoritesAdd(photoId);
+            try
+            {
+                flickr.FavoritesAdd(photoId);
+            }
+            catch (FlickrApiException)
+            {
+                return;
+            }
         }
 
         public void UnsetFavorite(string photoId)
@@ -46,9 +53,9 @@ namespace Epicture
             {
                 flickr.FavoritesRemove(photoId);
             }
-            catch (FlickrException e)
+            catch (FlickrException)
             {
-                MessageBox.Show("Can't remove photo from favorite : " + e.Message);
+                return;
             }
         }
 
@@ -79,6 +86,7 @@ namespace Epicture
                 Managers.Instance.user.Token = accessToken.Token;
                 Managers.Instance.user.Connected = true;
                 MessageBox.Show("Successfully authenticated as " + accessToken.FullName);
+                Managers.Instance.cache.LoadFavorite();
             }
             catch (FlickrApiException ex)
             {

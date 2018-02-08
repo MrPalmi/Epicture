@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Epicture"
         mc:Ignorable="d"
-        Title="MainWindow" Height="800" Width="1650">
+        Closing="Window_Closing"
+        Title="Epicture" Height="800" Width="1650">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -52,7 +53,7 @@
 
                 <Button Name="Upload" Grid.Row="0" Click="UploadMode" Visibility="Collapsed">Upload</Button>
                 <Button Name="FavorisSearch" Grid.Row="1" Click="SearchFavoris" Visibility="Collapsed">Favoris</Button>
-                <Button Name="Indesirable" Grid.Row="2" Click="SearchIndesirable" Visibility="Collapsed">Indesirable</Button>
+                <Button Name="Indesirable" Grid.Row="2" Click="DisplayIndesirable" Visibility="Collapsed">Hide indesirables</Button>
                 
             </Grid>
         </Grid>

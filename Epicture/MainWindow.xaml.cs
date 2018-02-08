@@ -15,35 +15,58 @@ namespace Epicture
         {
             InitializeComponent();
             Managers.Instance.flicker.Connect();
-            SearchMode();
+            Managers.Instance.cache.LoadFavorite();
+            Managers.Instance.cache.LoadIndesirable();
+            SearchRecent();
+        }
 
-			PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
+        public void SearchRecent()
+        {
+            SearchMode();
+            Pannel.Children.Clear();
+            PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
 
             foreach (Photo photo in photos)
-                LoadImage(photo);
+            {
+                if (!Managers.Instance.user.AllowIndesirable)
+                {
+                    if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                        LoadImage(photo);
+                }
+                else
+                    LoadImage(photo);
+            }
+            ScrollPannel.ScrollToTop();
         }
 
         public void Search(string searchTerm, int numPage, int imagePerPage)
         {
-            SearchMode();
             if (String.IsNullOrEmpty(searchTerm))
+            {
+                SearchRecent();
                 return;
-			var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+            }
+            SearchMode();
+
+            var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
 
             PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
-
             Pannel.Children.Clear();
-
             foreach (Photo photo in photos)
             {
-                Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
-                LoadImage(photo);
+                if (!Managers.Instance.user.AllowIndesirable)
+                {
+                    if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                        LoadImage(photo);
+                }
+                else
+                    LoadImage(photo);
             }
+            ScrollPannel.ScrollToTop();
         }
 
         public void LoadImage(Photo photo)
         {
-            SearchMode();
             ImageInfo imgProfil = new ImageInfo(photo);
             Pannel.Children.Add(imgProfil);
         }
@@ -53,8 +76,7 @@ namespace Epicture
             Managers.Instance.flicker.page += 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
 			ScrollPannel.ScrollToTop();
-			    
-	}
+	    }
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
@@ -63,7 +85,7 @@ namespace Epicture
                 Managers.Instance.flicker.page = 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
 			ScrollPannel.ScrollToTop();
-			   }
+		}
 
         private void Search(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -81,13 +103,16 @@ namespace Epicture
             if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
             {
                 Managers.Instance.flicker.page = 1;
-                PhotoCollection favoris = Managers.Instance.flicker.flickr.FavoritesGetList();
                 Pannel.Children.Clear();
-
-                foreach (Photo photo in favoris)
+                foreach (Photo photo in Managers.Instance.cache.Favorite)
                 {
-                    Console.WriteLine("Photo {0} has title '{1}' and is at {2}", photo.PhotoId, photo.Title, photo.LargeUrl);
-                    LoadImage(photo);
+                    if (!Managers.Instance.user.AllowIndesirable)
+                    {
+                        if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                            LoadImage(photo);
+                    }
+                    else
+                        LoadImage(photo);
                 }
             }
         }
@@ -117,9 +142,12 @@ namespace Epicture
             UserInfo.Text = Managers.Instance.user.UserName;
         }
 
-        private void SearchIndesirable(object sender, RoutedEventArgs e)
+        private void DisplayIndesirable(object sender, RoutedEventArgs e)
         {
-            SearchMode();
+            Managers.Instance.user.AllowIndesirable = !Managers.Instance.user.AllowIndesirable;
+            Indesirable.Content = "Display indesirables in safe mode";
+            if (Managers.Instance.user.AllowIndesirable)
+                Indesirable.Content = "Hide indesirables";
         }
 
         private void UploadImage(object sender, RoutedEventArgs e)
@@ -148,8 +176,6 @@ namespace Epicture
 
         private void SearchMode()
         {
-            Managers.Instance.cache.ReloadFavoriteCache();
-
             ScrollPannel.Visibility = Visibility.Visible;
             Pannel.Visibility = Visibility.Visible;
             Navigation.Visibility = Visibility.Visible;
@@ -188,6 +214,12 @@ namespace Epicture
                     Filename.ToolTip = null;
                     break;
             }
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Managers.Instance.cache.SaveFavorite();
+            Managers.Instance.cache.SaveIndesirable();
         }
     }
 }
