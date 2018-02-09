@@ -75,8 +75,8 @@ namespace Epicture
         {
             Managers.Instance.flicker.page += 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
-			ScrollPannel.ScrollToTop();
-	    }
+            ScrollPannel.ScrollToTop();
+        }
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
@@ -84,8 +84,8 @@ namespace Epicture
             if (Managers.Instance.flicker.page < 1)
                 Managers.Instance.flicker.page = 1;
             Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
-			ScrollPannel.ScrollToTop();
-		}
+            ScrollPannel.ScrollToTop();
+        }
 
         private void Search(object sender, System.Windows.Input.KeyEventArgs e)
         {
@@ -132,6 +132,7 @@ namespace Epicture
                 FavorisSearch.Visibility = Visibility.Visible;
                 Upload.Visibility = Visibility.Visible;
                 Indesirable.Visibility = Visibility.Visible;
+                Uploaded.Visibility = Visibility.Visible;
             }
             else
                 ValidationToken.Visibility = Visibility.Visible;
@@ -148,6 +149,26 @@ namespace Epicture
             Indesirable.Content = "Display indesirables in safe mode";
             if (Managers.Instance.user.AllowIndesirable)
                 Indesirable.Content = "Hide indesirables";
+        }
+
+        private void DisplayUploaded(object sender, RoutedEventArgs e)
+        {
+            SearchMode();
+
+            Pannel.Children.Clear();
+
+            if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
+            {
+                Managers.Instance.flicker.page = 1;
+
+                var options = new PartialSearchOptions { Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage, PerPage = Managers.Instance.flicker.imagePerPage, Page = Managers.Instance.flicker.page };
+
+                PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetNotInSet(options);
+                Pannel.Children.Clear();
+                foreach (Photo photo in photos)
+                    LoadImage(photo);
+                ScrollPannel.ScrollToTop();
+            }
         }
 
         private void UploadImage(object sender, RoutedEventArgs e)

@@ -48,13 +48,15 @@
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
                     <RowDefinition Height="80"/>
+                    <RowDefinition Height="80"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
                 <Button Name="Upload" Grid.Row="0" Click="UploadMode" Visibility="Collapsed">Upload</Button>
                 <Button Name="FavorisSearch" Grid.Row="1" Click="SearchFavoris" Visibility="Collapsed">Favoris</Button>
                 <Button Name="Indesirable" Grid.Row="2" Click="DisplayIndesirable" Visibility="Collapsed">Hide indesirables</Button>
-                
+                <Button Name="Uploaded" Grid.Row="3" Click="DisplayUploaded" Visibility="Collapsed">Uploaded</Button>
+
             </Grid>
         </Grid>
 
