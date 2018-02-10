@@ -35,27 +35,29 @@ namespace Epicture
             userID = flickr.PeopleFindByEmail(userMail).UserId;
         }
 
-        public void SetFavorite(string photoId)
+        public bool SetFavorite(string photoId)
         {
             try
             {
                 flickr.FavoritesAdd(photoId);
+                return true;
             }
             catch (FlickrApiException)
             {
-                return;
+                return false;
             }
         }
 
-        public void UnsetFavorite(string photoId)
+        public bool UnsetFavorite(string photoId)
         {
             try
             {
                 flickr.FavoritesRemove(photoId);
+                return true;
             }
             catch (FlickrException)
             {
-                return;
+                return false;
             }
         }
 
