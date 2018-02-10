@@ -1,7 +1,7 @@
-﻿using System.Windows;
+﻿using System.Windows.Forms;
+using System.Windows;
 using FlickrNet;
 using System;
-using System.Windows.Forms;
 
 namespace Epicture
 {
@@ -14,9 +14,20 @@ namespace Epicture
         public MainWindow()
         {
             InitializeComponent();
-            Managers.Instance.flicker.Connect();
+            switch (Managers.Instance.service)
+            {
+                case SERVICE.FLICKR:
+                    Managers.Instance.flicker.Connect();
+                    break;
+                case SERVICE.IMGUR:
+                    Managers.Instance.imgur.Connect();
+                    break;
+            }
             Managers.Instance.cache.LoadFavorite();
             Managers.Instance.cache.LoadIndesirable();
+
+            ActionPannel.Height = new GridLength(0);
+
             SearchRecent();
         }
 
@@ -24,18 +35,27 @@ namespace Epicture
         {
             SearchMode();
             Pannel.Children.Clear();
-            PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
 
-            foreach (Photo photo in photos)
+            switch (Managers.Instance.service)
             {
-                if (!Managers.Instance.user.AllowIndesirable)
-                {
-                    if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                        LoadImage(photo);
-                }
-                else
-                    LoadImage(photo);
+                case SERVICE.FLICKR:
+                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
+
+                    foreach (Photo photo in photos)
+                    {
+                        if (!Managers.Instance.user.AllowIndesirable)
+                        {
+                            if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                                LoadImage(photo);
+                        }
+                        else
+                            LoadImage(photo);
+                    }
+                    break;
+                case SERVICE.IMGUR:
+                    break;
             }
+
             ScrollPannel.ScrollToTop();
         }
 
@@ -48,20 +68,28 @@ namespace Epicture
             }
             SearchMode();
 
-            var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
-
-            PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
-            Pannel.Children.Clear();
-            foreach (Photo photo in photos)
+            switch (Managers.Instance.service)
             {
-                if (!Managers.Instance.user.AllowIndesirable)
-                {
-                    if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                        LoadImage(photo);
-                }
-                else
-                    LoadImage(photo);
+                case SERVICE.FLICKR:
+                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+
+                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
+                    Pannel.Children.Clear();
+                    foreach (Photo photo in photos)
+                    {
+                        if (!Managers.Instance.user.AllowIndesirable)
+                        {
+                            if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                                LoadImage(photo);
+                        }
+                        else
+                            LoadImage(photo);
+                    }
+                    break;
+                case SERVICE.IMGUR:
+                    break;
             }
+            
             ScrollPannel.ScrollToTop();
         }
 
@@ -73,17 +101,17 @@ namespace Epicture
 
         private void NextPage(object sender, RoutedEventArgs e)
         {
-            Managers.Instance.flicker.page += 1;
-            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+            Managers.Instance.nav.Page += 1;
+            Search(search.Text, Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage);
             ScrollPannel.ScrollToTop();
         }
 
         private void PrevPage(object sender, RoutedEventArgs e)
         {
-            Managers.Instance.flicker.page -= 1;
-            if (Managers.Instance.flicker.page < 1)
-                Managers.Instance.flicker.page = 1;
-            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+            Managers.Instance.nav.Page -= 1;
+            if (Managers.Instance.nav.Page < 1)
+                Managers.Instance.nav.Page = 1;
+            Search(search.Text, Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage);
             ScrollPannel.ScrollToTop();
         }
 
@@ -93,33 +121,51 @@ namespace Epicture
                 return;
 
             e.Handled = true;
-            Managers.Instance.flicker.page = 1;
-            Search(search.Text, Managers.Instance.flicker.page, Managers.Instance.flicker.imagePerPage);
+            Managers.Instance.nav.Page = 1;
+            Search(search.Text, Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage);
         }
 
         private void SearchFavoris(object sender, RoutedEventArgs e)
         {
             SearchMode();
-            if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
+
+            if (Managers.Instance.user.Connected)
             {
-                Managers.Instance.flicker.page = 1;
+                Managers.Instance.nav.Page = 1;
                 Pannel.Children.Clear();
-                foreach (Photo photo in Managers.Instance.cache.Favorite)
+
+                switch (Managers.Instance.service)
                 {
-                    if (!Managers.Instance.user.AllowIndesirable)
-                    {
-                        if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                            LoadImage(photo);
-                    }
-                    else
-                        LoadImage(photo);
+                    case SERVICE.FLICKR:
+                        foreach (Photo photo in Managers.Instance.cache.Favorite)
+                        {
+                            if (!Managers.Instance.user.AllowIndesirable)
+                            {
+                                if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+                                    LoadImage(photo);
+                            }
+                            else
+                                LoadImage(photo);
+                        }
+                        break;
+                    case SERVICE.IMGUR:
+                        break;
                 }
             }
         }
 
         private void AskToken(object sender, RoutedEventArgs e)
         {
-            Managers.Instance.flicker.AskToken();
+            switch (Managers.Instance.service)
+            {
+                case SERVICE.FLICKR:
+                    Managers.Instance.flicker.AskToken();
+                    break;
+                case SERVICE.IMGUR:
+                    Managers.Instance.imgur.AskToken();
+                    break;
+            }
+
             ValidationToken.Visibility = Visibility.Visible;
             ValidateTokenButton.Visibility = Visibility.Visible;
             AskTokenButton.Visibility = Visibility.Collapsed;
@@ -127,18 +173,25 @@ namespace Epicture
 
         private void ValidateToken(object sender, RoutedEventArgs e)
         {
-            if (Managers.Instance.flicker.ValidateToken(ValidationToken.Text))
-            {
-                FavorisSearch.Visibility = Visibility.Visible;
-                Upload.Visibility = Visibility.Visible;
-                Indesirable.Visibility = Visibility.Visible;
-                Gallery.Visibility = Visibility.Visible;
-            }
-            else
-                ValidationToken.Visibility = Visibility.Visible;
+            bool ok = false;
 
-            ValidationToken.Visibility = Visibility.Collapsed;
-            ValidateTokenButton.Visibility = Visibility.Collapsed;
+            switch (Managers.Instance.service)
+            {
+                case SERVICE.FLICKR:
+                    if (Managers.Instance.flicker.ValidateToken(ValidationToken.Text))
+                        ok = true;
+                    break;
+                case SERVICE.IMGUR:
+                    if (Managers.Instance.imgur.ValidateToken(ValidationToken.Text))
+                        ok = true;
+                    break;
+            }
+
+            if (ok)
+            {
+                ActionPannel.Height = new GridLength();
+                ConnectionPannel.Height = new GridLength(0);
+            }
 
             UserInfo.Text = Managers.Instance.user.UserName;
         }
@@ -157,16 +210,24 @@ namespace Epicture
 
             Pannel.Children.Clear();
 
-            if (Managers.Instance.flicker.accessToken != null && Managers.Instance.flicker.accessToken.UserId != null)
+            if (Managers.Instance.user.Connected)
             {
-                Managers.Instance.flicker.page = 1;
-
-                var options = new PartialSearchOptions { Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage, PerPage = Managers.Instance.flicker.imagePerPage, Page = Managers.Instance.flicker.page };
-
-                PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetNotInSet(options);
+                Managers.Instance.nav.Page = 1;
                 Pannel.Children.Clear();
-                foreach (Photo photo in photos)
-                    LoadImage(photo);
+
+                switch (Managers.Instance.service)
+                {
+                    case SERVICE.FLICKR:
+                        var options = new PartialSearchOptions { Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage, PerPage = Managers.Instance.nav.ImagePerPage, Page = Managers.Instance.nav.Page };
+
+                        PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetNotInSet(options);
+                        foreach (Photo photo in photos)
+                            LoadImage(photo);
+                        break;
+                    case SERVICE.IMGUR:
+                        break;
+                }
+                
                 ScrollPannel.ScrollToTop();
             }
         }
@@ -175,8 +236,16 @@ namespace Epicture
         {
             try
             {
-                Managers.Instance.flicker.flickr.OnUploadProgress += new EventHandler<FlickrNet.UploadProgressEventArgs>(OnUploadProgress);
-                Managers.Instance.flicker.Upload(Filename.Text, Title.Text, Description.Text, CheckPublic.IsChecked.Value);
+                switch (Managers.Instance.service)
+                {
+                    case SERVICE.FLICKR:
+                        Managers.Instance.flicker.flickr.OnUploadProgress += new EventHandler<FlickrNet.UploadProgressEventArgs>(OnUploadProgress);
+                        Managers.Instance.flicker.Upload(Filename.Text, Title.Text, Description.Text, CheckPublic.IsChecked.Value);
+                        break;
+                    case SERVICE.IMGUR:
+                        break;
+                }
+                
                 System.Windows.MessageBox.Show("File " + Title.Text + " has been successfully uploaded.");
                 Filename.Text = "";
                 Title.Text = "";

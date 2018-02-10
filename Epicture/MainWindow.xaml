@@ -15,47 +15,56 @@
         
         <Grid Name="LeftPannel" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100"/>
-                <RowDefinition Height="100"/>
-                <RowDefinition/>
+                <RowDefinition Height="100" Name="InformationPannel"/>
+                <RowDefinition Height="150" Name="ConnectionPannel"/>
+                <RowDefinition Height="50" />
+                <RowDefinition Name="ActionPannel"/>
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
-                <TextBlock Name="UserInfo" Margin="10,10,10,10"></TextBlock>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Informations</Label>
+                <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
             </Grid>
             
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
+                    <RowDefinition Height="30"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-
-                <Button Name="AskTokenButton" Grid.Row="0" Click="AskToken">Connect</Button>
-                <TextBox Name="ValidationToken" Grid.Row="1" Visibility="Collapsed"
+                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Connection</Label>
+                <Button Name="AskTokenButton" Grid.Row="1" Click="AskToken" Margin="4">Connect</Button>
+                <TextBox Name="ValidationToken" Grid.Row="2" Visibility="Collapsed"
                          FontSize="18"
                          FontFamily="Roboto Light"
                          Foreground="DarkGray"
                          Padding="5,5,5,5"
                          TextAlignment="Center"
                          ></TextBox>
-                <Button Name="ValidateTokenButton" Grid.Row="2" Click="ValidateToken" Visibility="Collapsed">Validate</Button>
+                <Button Name="ValidateTokenButton" Grid.Row="3" Click="ValidateToken" Visibility="Collapsed" Margin="4">Validate</Button>
 
             </Grid>
 
-            <Grid Grid.Row="2">
+            <Grid Grid.Row="3">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="80"/>
-                    <RowDefinition Height="80"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="40"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
 
-                <Button Name="Upload" Grid.Row="0" Click="UploadMode" Visibility="Collapsed">Upload</Button>
-                <Button Name="FavorisSearch" Grid.Row="1" Click="SearchFavoris" Visibility="Collapsed">Favoris</Button>
-                <Button Name="Indesirable" Grid.Row="2" Click="DisplayIndesirable" Visibility="Collapsed">Hide indesirables</Button>
-                <Button Name="Gallery" Grid.Row="3" Click="DisplayUploaded" Visibility="Collapsed" Margin="-10,0,10,0">Gallery</Button>
+                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Actions</Label>
+                <Button Name="Upload" Grid.Row="1" Margin="4" Background="LightGreen" Click="UploadMode">Upload</Button>
+                <Button Name="FavorisSearch" Grid.Row="2" Margin="4" Background="LightGreen" Click="SearchFavoris">Favoris</Button>
+                <Button Name="Indesirable" Grid.Row="3" Margin="4" Background="LightGreen" Click="DisplayIndesirable">Hide indesirables</Button>
+                <Button Name="Gallery" Grid.Row="4" Margin="4" Background="LightGreen" Click="DisplayUploaded">Gallery</Button>
 
             </Grid>
         </Grid>

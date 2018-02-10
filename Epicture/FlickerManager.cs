@@ -13,9 +13,6 @@ namespace Epicture
         public Flickr flickr;
         public string userID;
 
-        public int imagePerPage;
-        public int page;
-
         private OAuthRequestToken requestToken;
         public OAuthAccessToken accessToken;
 
@@ -26,8 +23,6 @@ namespace Epicture
         public void Connect()
         {
             flickr = new Flickr(Key, secretKey);
-            imagePerPage = 40;
-            page = 1;
         }
 
         public void ConnectUser(string userMail)
@@ -63,10 +58,8 @@ namespace Epicture
 
         public void AskToken()
         {
-            Flickr f = Managers.Instance.flicker.flickr;
-            requestToken = f.OAuthGetRequestToken("oob");
-
-            string url = f.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Write);
+            requestToken = flickr.OAuthGetRequestToken("oob");
+            string url = flickr.OAuthCalculateAuthorizationUrl(requestToken.Token, AuthLevel.Write);
 
             System.Diagnostics.Process.Start(url);
         }
