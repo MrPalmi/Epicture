@@ -132,7 +132,7 @@ namespace Epicture
                 FavorisSearch.Visibility = Visibility.Visible;
                 Upload.Visibility = Visibility.Visible;
                 Indesirable.Visibility = Visibility.Visible;
-                Uploaded.Visibility = Visibility.Visible;
+                Gallery.Visibility = Visibility.Visible;
             }
             else
                 ValidationToken.Visibility = Visibility.Visible;
