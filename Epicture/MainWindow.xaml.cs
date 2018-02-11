@@ -55,6 +55,39 @@ namespace Epicture
                     }
                     break;
                 case SERVICE.IMGUR:
+                    var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
+                    var result = endpoint.GetMemesSubGalleryAsync();
+                    result.Wait();
+                    var list = result.Result;
+
+                    foreach (var it in list)
+                    {
+                        if (it.GetType() == typeof(GalleryImage))
+                        {
+                            var img = it as GalleryImage;
+                            if (!Managers.Instance.user.AllowIndesirable)
+                            {
+                                if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                            }
+                            else
+                                LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                        }
+                        else if (it.GetType() == typeof(GalleryAlbum))
+                        {
+                            var album = it as GalleryAlbum;
+                            foreach (var img in album.Images)
+                            {
+                                if (!Managers.Instance.user.AllowIndesirable)
+                                {
+                                    if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
+                                }
+                                else
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
+                            }
+                        }
+                    }
                     break;
             }
 
@@ -115,10 +148,10 @@ namespace Epicture
                                 if (!Managers.Instance.user.AllowIndesirable)
                                 {
                                     if (!Managers.Instance.cache.IsIndesirable(img.Id))
-                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
                                 }
                                 else
-                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
                             }
                         }
                     }
@@ -127,9 +160,9 @@ namespace Epicture
             ScrollPannel.ScrollToTop();
         }
 
-        public void LoadImage(string id, string title, string description, string smallUrl, string mediumUrl, string largeUrl)
+        public void LoadImage(string id, string title, string description, string smallUrl, string mediumUrl, string largeUrl, string albumId = null)
         {
-            ImageInfo imgProfil = new ImageInfo(id, title, description, smallUrl, mediumUrl, largeUrl);
+            ImageInfo imgProfil = new ImageInfo(id, title, description, smallUrl, mediumUrl, largeUrl, albumId);
             Pannel.Children.Add(imgProfil);
         }
        
@@ -187,6 +220,39 @@ namespace Epicture
                         }
                         break;
                     case SERVICE.IMGUR:
+                        var endpoint = new AccountEndpoint(Managers.Instance.imgur.Imgur);
+                        var result = endpoint.GetAccountGalleryFavoritesAsync();
+                        result.Wait();
+                        var list = result.Result;
+
+                        foreach (var it in list)
+                        {
+                            if (it.GetType() == typeof(GalleryImage))
+                            {
+                                var img = it as GalleryImage;
+                                if (!Managers.Instance.user.AllowIndesirable)
+                                {
+                                    if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                }
+                                else
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                            }
+                            else if (it.GetType() == typeof(GalleryAlbum))
+                            {
+                                var album = it as GalleryAlbum;
+                                foreach (var img in album.Images)
+                                {
+                                    if (!Managers.Instance.user.AllowIndesirable)
+                                    {
+                                        if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                            LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
+                                    }
+                                    else
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link, album.Id);
+                                }
+                            }
+                        }
                         break;
                 }
             }
@@ -263,6 +329,39 @@ namespace Epicture
                             LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         break;
                     case SERVICE.IMGUR:
+                        var endpoint = new AccountEndpoint(Managers.Instance.imgur.Imgur);
+                        var result = endpoint.GetAccountSubmissionsAsync();
+                        result.Wait();
+                        var list = result.Result;
+
+                        foreach (var it in list)
+                        {
+                            if (it.GetType() == typeof(GalleryImage))
+                            {
+                                var img = it as GalleryImage;
+                                if (!Managers.Instance.user.AllowIndesirable)
+                                {
+                                    if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                }
+                                else
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                            }
+                            else if (it.GetType() == typeof(GalleryAlbum))
+                            {
+                                var album = it as GalleryAlbum;
+                                foreach (var img in album.Images)
+                                {
+                                    if (!Managers.Instance.user.AllowIndesirable)
+                                    {
+                                        if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                            LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                    }
+                                    else
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
+                                }
+                            }
+                        }
                         break;
                 }
                 

@@ -6,7 +6,6 @@ using System.Windows.Media;
 using System.Drawing;
 using System.Windows;
 using System.Net;
-using FlickrNet;
 using System;
 
 namespace Epicture
@@ -22,8 +21,9 @@ namespace Epicture
         string smallUrl;
         string mediumUrl;
         string largeUrl;
+        string albumId;
 
-        public ImageInfo(string id_, string title_, string description_, string smallUrl_, string mediumUrl_, string largeUrl_)
+        public ImageInfo(string id_, string title_, string description_, string smallUrl_, string mediumUrl_, string largeUrl_, string albumId_ = null)
         {
             InitializeComponent();
             id = id_;
@@ -32,6 +32,7 @@ namespace Epicture
             smallUrl = smallUrl_;
             mediumUrl = mediumUrl_;
             largeUrl = largeUrl_;
+            albumId = albumId_;
 			LoadImage();
 		}
 
@@ -72,11 +73,17 @@ namespace Epicture
 		{
             if (Managers.Instance.cache.IsFavorite(id))
             {
-                Managers.Instance.cache.RemoveFavorite(id);
+                if (albumId != null)
+                    Managers.Instance.cache.RemoveFavorite(id, albumId);
+                else
+                    Managers.Instance.cache.RemoveFavorite(id);
                 StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
                 return;
             }
-            Managers.Instance.cache.AddFavorite(id);
+            if (albumId != null)
+                Managers.Instance.cache.AddFavorite(id, albumId);
+            else
+                Managers.Instance.cache.AddFavorite(id);
             StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
         }
 

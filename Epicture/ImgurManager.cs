@@ -7,6 +7,7 @@ using System.Windows;
 using Imgur.API;
 using System.IO;
 using System;
+using Imgur.API.Models.Impl;
 
 namespace Epicture
 {
@@ -48,6 +49,9 @@ namespace Epicture
             Managers.Instance.user.Token = accessToken.AccessToken;
             Managers.Instance.user.Connected = true;
             MessageBox.Show("Successfully authenticated as " + accessToken.AccountUsername);
+            var token_ = new OAuth2Token(accessToken.AccessToken, accessToken.RefreshToken, accessToken.TokenType,
+                            accessToken.AccountId, accessToken.AccountUsername, accessToken.ExpiresIn);
+            Imgur = new ImgurClient(id, secretId, token_);
             return true;
         }
 
@@ -83,6 +87,25 @@ namespace Epicture
                 Console.WriteLine("An error occurred uploading an image to Imgur.");
                 Console.WriteLine(imgurEx.Message);
             }
+        }
+
+        public bool SetFavorite(string id)
+        {
+            var endpoint = new ImageEndpoint(Imgur);
+            endpoint.FavoriteImageAsync(id);
+            return true;
+        }
+
+        public bool SetFavoriteAlbum(string id)
+        {
+            var endpoint_ = new AlbumEndpoint(Imgur);
+            endpoint_.FavoriteAlbumAsync(id);
+            return true;
+        }
+
+        public bool UnsetFavorite(string id)
+        {
+            return false;
         }
     }
 }
