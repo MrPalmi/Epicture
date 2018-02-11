@@ -4,113 +4,210 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Epicture"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Closing="Window_Closing"
-        Title="Epicture" Height="800" Width="1650">
+        Title="Epicture" Height="900" Width="1700">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         
-        <Grid Name="LeftPannel" Grid.Column="0">
+        <Grid Name="LeftPannel" Grid.Column="0" MinWidth="200">
             <Grid.RowDefinitions>
-                <RowDefinition Height="120" Name="InformationPannel"/>
-                <RowDefinition Height="auto" Name="SearchSettingsPannel"/>
                 <RowDefinition Height="150" Name="ConnectionPannel"/>
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="150" Name="InformationPannel"/>
+                <RowDefinition Height="auto" Name="SearchSettingsPannel"/>
                 <RowDefinition Name="ActionPannel"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" Name="CONNECTION">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition/>
-                    <RowDefinition Height="40"/>
-                </Grid.RowDefinitions>
-                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Informations</Label>
-                <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
-                <Button Grid.Row="2" Name="SwitchButton" Margin="4" Click="SwitchService">Use Flicker Api</Button>
-            </Grid>
-
-            <Grid Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Search Settings</Label>
-                <TextBlock Name="SearchSettings" Grid.Row="0" Margin="10,10,10,10"></TextBlock>
-
-                <CheckBox Name="SmallSearch" Grid.Row="1" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Small</CheckBox>
-                <CheckBox Name="MediumSearch" Grid.Row="2" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Medium</CheckBox>
-                <CheckBox Name="LargeSearch" Grid.Row="3" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Large</CheckBox>
-                <CheckBox Name="AllSize" Grid.Row="4" Margin="1" Background="LightGray" Click="AllSize_Click" IsChecked="True">All sizes</CheckBox>
-            </Grid>
-
-            <Grid Grid.Row="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="50"/>
                     <RowDefinition/>
                     <RowDefinition/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Connection</Label>
-                <Button Name="AskTokenButton" Grid.Row="1" Click="AskToken" Margin="4">Connect</Button>
+                <Grid Background="ForestGreen"  Margin="0,3,0,3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Grid.Column="1" Icon="Signal" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"></fa:ImageAwesome>
+                    <Label Foreground="White" Grid.Column="3" FontSize="25" VerticalAlignment="Center">Connection</Label>
+                </Grid>
+                <Button Name="AskTokenButton" 
+                        Grid.Row="1" Click="AskToken" Margin="4"
+                        BorderThickness="0"
+                            Background="#426ef4"
+                            Foreground="White">Connect</Button>
                 <TextBox Name="ValidationToken" Grid.Row="2" Visibility="Collapsed"
                          FontSize="18"
                          FontFamily="Roboto Light"
                          Foreground="DarkGray"
                          Padding="5,5,5,5"
                          TextAlignment="Center"
+                         Margin="4"
                          ></TextBox>
-                <Button Name="ValidateTokenButton" Grid.Row="3" Click="ValidateToken" Visibility="Collapsed" Margin="4">Validate</Button>
+                <Button Name="ValidateTokenButton" Grid.Row="3" 
+                        Click="ValidateToken" Visibility="Collapsed" Margin="4"
+                         BorderThickness="0"
+                            Background="#426ef4"
+                            Foreground="White">Validate</Button>
 
             </Grid>
 
-            <Grid Grid.Row="3">
+            <Grid Grid.Row="1" Name="INFO">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="40"/>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid Background="ForestGreen"  Margin="0,3,0,3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Grid.Column="1" Icon="InfoCircle" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"></fa:ImageAwesome>
+                    <Label Foreground="White" Grid.Column="3" FontSize="25" VerticalAlignment="Center">Informations</Label>
+                </Grid>
+                <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
+            </Grid>
+
+            <Grid Grid.Row="2" Name="SETTINGS">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Grid Background="ForestGreen"  Margin="0,3,0,3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Grid.Column="1" Icon="cog" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"></fa:ImageAwesome>
+                    <Label Foreground="White" Grid.Column="3" FontSize="25" VerticalAlignment="Center">Settings</Label>
+                </Grid>
+                <TextBlock Name="SearchSettings" Grid.Row="0" Margin="10,10,10,10"></TextBlock>
+                <Grid Grid.Row="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="LightGreen"  Margin="10,3,10,3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <fa:ImageAwesome Grid.Column="1" Icon="Filter" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray"></fa:ImageAwesome>
+                        <Label Foreground="Black" Grid.Column="2" FontSize="15" VerticalAlignment="Center">Filter</Label>
+                    </Grid>
+                        
+                    <CheckBox Name="SmallSearch" Grid.Row="1" Margin="20,1,1,1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Small</CheckBox>
+                    <CheckBox Name="MediumSearch" Grid.Row="2" Margin="20,1,1,1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Medium</CheckBox>
+                    <CheckBox Name="LargeSearch" Grid.Row="3" Margin="20,1,1,1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Large</CheckBox>
+                    <CheckBox Name="AllSize" Grid.Row="4" Margin="20,1,1,1" Background="LightGray" Click="AllSize_Click" IsChecked="True">All sizes</CheckBox>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="LightGreen"  Margin="10,3,10,3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <fa:ImageAwesome Grid.Column="1" Icon="Server" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray"></fa:ImageAwesome>
+                        <Label Foreground="Black" Grid.Column="2" FontSize="15" VerticalAlignment="Center">Service</Label>
+                    </Grid>
+                    <Button Grid.Row="1" Name="SwitchButton" Margin="20,4,20,4" Click="SwitchService"
+                            BorderThickness="0"
+                            Background="#f4b541"
+                            Foreground="White"
+                            >Use Flicker Api</Button>
+                </Grid>
+                <Grid Grid.Row="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="35"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <Grid Background="LightGreen"  Margin="10,3,10,3" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5"/>
+                            <ColumnDefinition Width="20"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <fa:ImageAwesome Grid.Column="1" Icon="Globe" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="Gray"></fa:ImageAwesome>
+                        <Label Foreground="Black" Grid.Column="2" FontSize="15" VerticalAlignment="Center">Navigation</Label>
+                    </Grid>
+                    <Button Name="Indesirable" Grid.Row="1" Margin="20,4,20,4"  BorderThickness="0"
+                            Background="#f4b541"
+                            Foreground="White" Click="DisplayIndesirable">Hide indesirables</Button>
+                </Grid>
+            </Grid>
+
+            <Grid Grid.Row="3" Name="ACTIONS">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
                     <RowDefinition/>
                 </Grid.RowDefinitions>
-
-                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Actions</Label>
-                <Button Name="Upload" Grid.Row="1" Margin="4" Background="LightGreen" Click="UploadMode">Upload</Button>
-                <Button Name="FavorisSearch" Grid.Row="2" Margin="4" Background="LightGreen" Click="SearchFavoris">Favoris</Button>
-                <Button Name="Indesirable" Grid.Row="3" Margin="4" Background="LightGreen" Click="DisplayIndesirable">Hide indesirables</Button>
-                <Button Name="Gallery" Grid.Row="4" Margin="4" Background="LightGreen" Click="DisplayUploaded">Gallery</Button>
+                <Grid Background="ForestGreen"  Margin="0,3,0,3" >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="5"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="10"/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <fa:ImageAwesome Grid.Column="1" Icon="Pagelines" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White"></fa:ImageAwesome>
+                    <Label Foreground="White" Grid.Column="3" FontSize="25" VerticalAlignment="Center">Actions</Label>
+                </Grid>
+                <Button BorderThickness="0,0,0,0" Name="Upload" Grid.Row="1" Margin="20,4,20,4" Background="LightGreen" Click="UploadMode">Upload</Button>
+                <Button BorderThickness="0,0,0,0" Name="FavorisSearch" Grid.Row="2" Margin="20,4,20,4" Background="LightGreen" Click="SearchFavoris">Favoris</Button>
+                <Button BorderThickness="0,0,0,0" Name="Gallery" Grid.Row="3" Margin="20,4,20,4" Background="LightGreen" Click="DisplayUploaded">Gallery</Button>
 
             </Grid>
+        
         </Grid>
 
         <Grid Name="RightPannel" Grid.Column="1" Background="#edeff2" FocusManager.FocusedElement="{Binding ElementName=search}">
             <Grid.RowDefinitions>
-                <RowDefinition Height="50"/>
+                <RowDefinition Height="60"/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
             <TextBox 
                 Grid.Row="0"
                 Name="search"
-                FontSize="25"
+                FontSize="30"
                 FontFamily="Roboto Light"
                 Foreground="LightGray"
                 Padding="5,5,5,5"
                 KeyUp="Search"
-                Margin="10,10,10,0"></TextBox>
+                Margin="10,10,10,00"></TextBox>
             <Grid Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition/>
-                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="50"/>
                 </Grid.RowDefinitions>
 
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Row="0" Name="ScrollPannel" Visibility="Collapsed">
-                    <WrapPanel Name="Pannel" ItemHeight="300" ItemWidth="350" Visibility="Collapsed"/>
+                    <WrapPanel Name="Pannel" ItemHeight="300" ItemWidth="350" Visibility="Collapsed" Margin="10"/>
                 </ScrollViewer>
 
                 <Grid Name="UploadForm" Visibility="Visible">
@@ -176,8 +273,8 @@
                         <ColumnDefinition/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
-                    <Button Click="PrevPage" Grid.Column="0">Prev page</Button>
-                    <Button Click="NextPage" Grid.Column="1">Next page</Button>
+                    <Button Background="Orange" BorderBrush="White"  Foreground="White" FontWeight="Bold" Click="PrevPage" Grid.Column="0">Prev page</Button>
+                    <Button Background="Orange" BorderBrush="White" Foreground="White" FontWeight="Bold" Click="NextPage" Grid.Column="1">Next page</Button>
                 </Grid>
             </Grid>
         </Grid>

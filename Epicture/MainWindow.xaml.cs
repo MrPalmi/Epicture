@@ -54,7 +54,7 @@ namespace Epicture
                     break;
                 case SERVICE.IMGUR:
                     var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
-                    var result = endpoint.GetMemesSubGalleryAsync(0, Imgur.API.Enums.TimeWindow.Week, Managers.Instance.nav.Page);
+                    var result = endpoint.GetMemesSubGalleryAsync(Imgur.API.Enums.MemesGallerySortOrder.Time, Imgur.API.Enums.TimeWindow.Week, Managers.Instance.nav.Page);
                     result.Wait();
                     var list = result.Result;
 
@@ -493,6 +493,8 @@ namespace Epicture
         {
             Managers.Instance.cache.LoadFavorite();
             Managers.Instance.cache.LoadIndesirable();
+
+            UserInfo.Text = Managers.Instance.user.UserName;
 
             if (Managers.Instance.user.Connected)
             {
