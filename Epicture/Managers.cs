@@ -38,7 +38,7 @@ namespace Epicture
             user = new UserManager();
             cache = new CacheManager();
             nav = new NavigationManager();
-            service = SERVICE.FLICKR;
+            service = SERVICE.IMGUR;
         }
     }
 }

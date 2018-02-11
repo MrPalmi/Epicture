@@ -48,10 +48,10 @@ namespace Epicture
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo);
+                                LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         }
                         else
-                            LoadImage(photo);
+                            LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                     }
                     break;
                 case SERVICE.IMGUR:
@@ -82,45 +82,43 @@ namespace Epicture
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo);
+                                LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         }
                         else
-                            LoadImage(photo);
+                            LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                     }
                     break;
                 case SERVICE.IMGUR:
                     var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
                     var result = endpoint.SearchGalleryAsync(searchTerm);
                     result.Wait();
-                    var images = result.Result;
-                    GalleryImage tmp = new GalleryImage();
+                    var list = result.Result;
 
-                    foreach (var img in images)
+                    foreach (var it in list)
                     {
-                        if (img.GetType() == tmp.GetType())
+                        if (it.GetType() == typeof(GalleryImage))
                         {
-                            var image = img as GalleryImage;
+                            var img = it as GalleryImage;
                             if (!Managers.Instance.user.AllowIndesirable)
                             {
-                                if (!Managers.Instance.cache.IsIndesirable(image.Id))
-                                    LoadImage(image);
+                                if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
                             }
                             else
-                                LoadImage(image);
+                                LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
                         }
-                        else
+                        else if (it.GetType() == typeof(GalleryAlbum))
                         {
-                            var gallery = img as GalleryAlbum;
-                            foreach (var it in gallery.Images)
+                            var album = it as GalleryAlbum;
+                            foreach (var img in album.Images)
                             {
-                                var img_ = it as GalleryImage;
                                 if (!Managers.Instance.user.AllowIndesirable)
                                 {
-                                    if (!Managers.Instance.cache.IsIndesirable(img_.Id))
-                                        LoadImage(img_);
+                                    if (!Managers.Instance.cache.IsIndesirable(img.Id))
+                                        LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
                                 }
                                 else
-                                    LoadImage(img_);
+                                    LoadImage(img.Id, img.Title, img.Description, img.Link, img.Link, img.Link);
                             }
                         }
                     }
@@ -129,17 +127,12 @@ namespace Epicture
             ScrollPannel.ScrollToTop();
         }
 
-        public void LoadImage(Photo photo)
+        public void LoadImage(string id, string title, string description, string smallUrl, string mediumUrl, string largeUrl)
         {
-            ImageInfo imgProfil = new ImageInfo(photo);
+            ImageInfo imgProfil = new ImageInfo(id, title, description, smallUrl, mediumUrl, largeUrl);
             Pannel.Children.Add(imgProfil);
         }
-        public void LoadImage(GalleryImage photo)
-        {
-            ImageInfo imgProfil = new ImageInfo(photo);
-            Pannel.Children.Add(imgProfil);
-        }
-
+       
         private void NextPage(object sender, RoutedEventArgs e)
         {
             Managers.Instance.nav.Page += 1;
@@ -187,10 +180,10 @@ namespace Epicture
                             if (!Managers.Instance.user.AllowIndesirable)
                             {
                                 if (!Managers.Instance.cache.IsIndesirable(it.PhotoId))
-                                    LoadImage(it);
+                                    LoadImage(it.PhotoId, it.Title, it.Description, it.SmallUrl, it.MediumUrl, it.LargeUrl);
                             }
                             else
-                                LoadImage(it);
+                                LoadImage(it.PhotoId, it.Title, it.Description, it.SmallUrl, it.MediumUrl, it.LargeUrl);
                         }
                         break;
                     case SERVICE.IMGUR:
@@ -267,7 +260,7 @@ namespace Epicture
 
                         PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetNotInSet(options);
                         foreach (Photo photo in photos)
-                            LoadImage(photo);
+                            LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         break;
                     case SERVICE.IMGUR:
                         break;

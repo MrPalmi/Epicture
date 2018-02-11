@@ -18,34 +18,22 @@ namespace Epicture
 	{
         string id;
         string title;
+        string description;
         string smallUrl;
         string mediumUrl;
         string largeUrl;
-        string description;
 
-        public ImageInfo(Photo photo)
+        public ImageInfo(string id_, string title_, string description_, string smallUrl_, string mediumUrl_, string largeUrl_)
         {
             InitializeComponent();
-            id = photo.PhotoId;
-            title = photo.Title;
-            smallUrl = photo.SmallUrl;
-            mediumUrl = photo.MediumUrl;
-            largeUrl = photo.LargeUrl;
-            description = photo.Description;
+            id = id_;
+            title = title_;
+            description = description_;
+            smallUrl = smallUrl_;
+            mediumUrl = mediumUrl_;
+            largeUrl = largeUrl_;
 			LoadImage();
 		}
-
-        public ImageInfo(GalleryImage photo)
-        {
-            InitializeComponent();
-            id = photo.Id;
-            title = photo.Title;
-            smallUrl = photo.Link;
-            mediumUrl = photo.Link;
-            largeUrl = photo.Link;
-            description = photo.Description;
-            LoadImage();
-        }
 
         private void LoadImage()
 		{
