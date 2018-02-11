@@ -1,12 +1,13 @@
-﻿using Imgur.API;
-using Imgur.API.Authentication.Impl;
+﻿using Imgur.API.Authentication.Impl;
 using Imgur.API.Endpoints.Impl;
-using Imgur.API.Enums;
-using Imgur.API.Models;
-using System;
-using System.IO;
 using System.Threading.Tasks;
+using Imgur.API.Models;
+using Imgur.API.Enums;
 using System.Windows;
+using Imgur.API;
+using System.IO;
+using System;
+using Imgur.API.Models.Impl;
 
 namespace Epicture
 {
@@ -14,8 +15,8 @@ namespace Epicture
     {
         private string id = "3229ec5962e2e0f";
         private string secretId = "cacd24a3b1dc136dd1d90ced9a87499a4b2ee4b9";
-        ImgurClient Imgur;
-        IOAuth2Token accessToken;
+        public ImgurClient Imgur;
+        public IOAuth2Token accessToken;
 
         public bool Connect()
         {
@@ -48,6 +49,9 @@ namespace Epicture
             Managers.Instance.user.Token = accessToken.AccessToken;
             Managers.Instance.user.Connected = true;
             MessageBox.Show("Successfully authenticated as " + accessToken.AccountUsername);
+            var token_ = new OAuth2Token(accessToken.AccessToken, accessToken.RefreshToken, accessToken.TokenType,
+                            accessToken.AccountId, accessToken.AccountUsername, accessToken.ExpiresIn);
+            Imgur = new ImgurClient(id, secretId, token_);
             return true;
         }
 
@@ -83,6 +87,25 @@ namespace Epicture
                 Console.WriteLine("An error occurred uploading an image to Imgur.");
                 Console.WriteLine(imgurEx.Message);
             }
+        }
+
+        public bool SetFavorite(string id)
+        {
+            var endpoint = new ImageEndpoint(Imgur);
+            endpoint.FavoriteImageAsync(id);
+            return true;
+        }
+
+        public bool SetFavoriteAlbum(string id)
+        {
+            var endpoint_ = new AlbumEndpoint(Imgur);
+            endpoint_.FavoriteAlbumAsync(id);
+            return true;
+        }
+
+        public bool UnsetFavorite(string id)
+        {
+            return false;
         }
     }
 }

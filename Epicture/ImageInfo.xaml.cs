@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using System.Windows.Media.Imaging;
 using System.Windows.Controls;
+using Imgur.API.Models.Impl;
 using System.Windows.Media;
 using System.Drawing;
 using System.Windows;
 using System.Net;
-using FlickrNet;
 using System;
 
 namespace Epicture
@@ -15,35 +15,47 @@ namespace Epicture
 	/// </summary>
 	public partial class ImageInfo : UserControl
 	{
-		public Photo photo;
+        string id;
+        string title;
+        string description;
+        string smallUrl;
+        string mediumUrl;
+        string largeUrl;
+        string albumId;
 
-        public ImageInfo(Photo photo_)
-		{
-			InitializeComponent();
-			photo = photo_;
+        public ImageInfo(string id_, string title_, string description_, string smallUrl_, string mediumUrl_, string largeUrl_, string albumId_ = null)
+        {
+            InitializeComponent();
+            id = id_;
+            title = title_;
+            description = description_;
+            smallUrl = smallUrl_;
+            mediumUrl = mediumUrl_;
+            largeUrl = largeUrl_;
+            albumId = albumId_;
 			LoadImage();
 		}
 
         private void LoadImage()
 		{
-			BitmapImage bitmap = new BitmapImage();
+            BitmapImage bitmap = new BitmapImage();
 			bitmap.BeginInit();
-			bitmap.UriSource = new Uri(photo.Small320Url, UriKind.Absolute);
+			bitmap.UriSource = new Uri(smallUrl, UriKind.Absolute);
 			bitmap.EndInit();
 
 			ImageSource imageSource = bitmap;
 			Image.Source = imageSource;
-			Title.Text = photo.Title;
-			Description.Text = photo.Description;
+			Title.Text = title;
+			Description.Text = description;
 
             if (Managers.Instance.user.Connected)
 			{
-                if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+                if (Managers.Instance.cache.IsFavorite(id))
                     StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
 			}
             else
     			Stars.Visibility = Visibility.Collapsed;
-            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+            if (Managers.Instance.cache.IsIndesirable(id))
             {
                 if (Managers.Instance.user.AllowIndesirable)
                 {
@@ -59,21 +71,27 @@ namespace Epicture
 
 		private void FavoriteSetter(object sender, RoutedEventArgs e)
 		{
-            if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+            if (Managers.Instance.cache.IsFavorite(id))
             {
-			    Managers.Instance.cache.RemoveFavorite(photo);
+                if (albumId != null)
+                    Managers.Instance.cache.RemoveFavorite(id, albumId);
+                else
+                    Managers.Instance.cache.RemoveFavorite(id);
                 StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
                 return;
             }
-            Managers.Instance.cache.AddFavorite(photo);
+            if (albumId != null)
+                Managers.Instance.cache.AddFavorite(id, albumId);
+            else
+                Managers.Instance.cache.AddFavorite(id);
             StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
         }
 
         private void IndesirableSetter(object sender, RoutedEventArgs e)
         {
-            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+            if (Managers.Instance.cache.IsIndesirable(id))
             {
-                Managers.Instance.cache.RemoveIndesirable(photo.PhotoId);
+                Managers.Instance.cache.RemoveIndesirable(id);
                 IndesirableIcon.Foreground = new SolidColorBrush(Colors.Gray);
                 Background = new SolidColorBrush(Colors.White);
                 Image.Visibility = Visibility.Visible;
@@ -81,7 +99,7 @@ namespace Epicture
                     Stars.Visibility = Visibility.Visible;
                 return;
             }
-            Managers.Instance.cache.AddIndesirable(photo.PhotoId);
+            Managers.Instance.cache.AddIndesirable(id);
             if (Managers.Instance.user.AllowIndesirable)
             {
                 Background = new SolidColorBrush(Colors.IndianRed);
@@ -93,38 +111,30 @@ namespace Epicture
                 Visibility = Visibility.Hidden;
         }
 
+        private void DownloadFile(string url, string id)
+        {
+            using (WebClient client = new WebClient())
+                client.DownloadFile(new Uri(url), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" + id + ".jpg");
+        }
+
         private void DownloadImage(object sender, RoutedEventArgs e)
 		{
 			try
 			{
-				if (photo.CanDownload != false)
+				MessageBoxResult done = MessageBox.Show("Download the picture?", "Download", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+				if (done == MessageBoxResult.Yes)
 				{
-					MessageBoxResult done = MessageBox.Show("Download the picture?", "Download", MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
-					if (done == MessageBoxResult.Yes)
-					{
-						if (photo.LargeUrl != null)
-						{
-							using (WebClient client = new WebClient())
-								client.DownloadFile(new Uri(photo.LargeUrl), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" + photo.PhotoId + ".jpg");
-						}
-						else if (photo.MediumUrl != null)
-						{
-							using (WebClient client = new WebClient())
-								client.DownloadFile(new Uri(photo.MediumUrl), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" + photo.Title + ".jpg");
-						}
-						else
-						{
-							using (WebClient client = new WebClient())
-								client.DownloadFile(new Uri(photo.SmallUrl), Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\" + photo.Title + ".jpg");
-						}
-						MessageBox.Show("Added photo to Pictures user folder");
-					}
-				}
-			}
+                    if (largeUrl != null)
+                        DownloadFile(largeUrl, id);
+                    else if (mediumUrl != null)
+                        DownloadFile(mediumUrl, id);
+                    else
+                        DownloadFile(smallUrl, id);
+					MessageBox.Show("Added photo to Pictures user folder");
+                }
+            }
 			catch (ExternalException)
 			{
-				//Something is wrong with Format -- Maybe required Format is not 
-				// applicable here
 				MessageBox.Show("Can't download the picture");
 			}
 		}
@@ -158,7 +168,7 @@ namespace Epicture
 		private void Indesirable_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
 		{
             IndesirableIcon.Foreground = new SolidColorBrush(Colors.LightGray);
-            if (Managers.Instance.cache.IsIndesirable(photo.PhotoId))
+            if (Managers.Instance.cache.IsIndesirable(id))
     			IndesirableIcon.Foreground = new SolidColorBrush(Colors.Gray);
         }
 
@@ -170,7 +180,7 @@ namespace Epicture
 		private void Stars_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
 		{
             StarsIcon.Foreground = new SolidColorBrush(Colors.LightGray);
-            if (Managers.Instance.cache.IsFavorite(photo.PhotoId))
+            if (Managers.Instance.cache.IsFavorite(id))
     			StarsIcon.Foreground = new SolidColorBrush(Colors.Gray);
         }
     }
