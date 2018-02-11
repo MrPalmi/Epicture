@@ -16,21 +16,9 @@ namespace Epicture
         public MainWindow()
         {
             InitializeComponent();
-            switch (Managers.Instance.service)
-            {
-                case SERVICE.FLICKR:
-                    Managers.Instance.flicker.Connect();
-                    break;
-                case SERVICE.IMGUR:
-                    Managers.Instance.imgur.Connect();
-                    break;
-            }
-            Managers.Instance.cache.LoadFavorite();
-            Managers.Instance.cache.LoadIndesirable();
-
-            ActionPannel.Height = new GridLength(0);
-
-            SearchRecent();
+            Managers.Instance.flicker.Connect();
+            Managers.Instance.imgur.Connect();
+            Init();
         }
 
         public void SearchRecent()
@@ -446,6 +434,49 @@ namespace Epicture
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Managers.Instance.cache.SaveIndesirable();
+        }
+
+        private void Init()
+        {
+            Managers.Instance.cache.LoadFavorite();
+            Managers.Instance.cache.LoadIndesirable();
+
+            if (Managers.Instance.user.Connected)
+            {
+                ActionPannel.Height = new GridLength();
+                ConnectionPannel.Height = new GridLength(0);
+                AskTokenButton.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                ActionPannel.Height = new GridLength(0);
+                ConnectionPannel.Height = new GridLength(150);
+                AskTokenButton.Visibility = Visibility.Visible;
+            }
+
+            ValidationToken.Visibility = Visibility.Collapsed;
+            ValidateTokenButton.Visibility = Visibility.Collapsed;
+
+            SearchRecent();
+        }
+
+        private void SwitchService(object sender, RoutedEventArgs e)
+        {
+            Managers.Instance.cache.SaveIndesirable();
+
+            switch (Managers.Instance.service)
+            {
+                case SERVICE.FLICKR:
+                    Managers.Instance.service = SERVICE.IMGUR;
+                    Init();
+                    SwitchButton.Content = "Use Flicker Api";
+                    break;
+                case SERVICE.IMGUR:
+                    Managers.Instance.service = SERVICE.FLICKR;
+                    Init();
+                    SwitchButton.Content = "Use Imgur Api";
+                    break;
+            }
         }
     }
 }

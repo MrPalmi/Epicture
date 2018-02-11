@@ -15,7 +15,7 @@
         
         <Grid Name="LeftPannel" Grid.Column="0">
             <Grid.RowDefinitions>
-                <RowDefinition Height="100" Name="InformationPannel"/>
+                <RowDefinition Height="120" Name="InformationPannel"/>
                 <RowDefinition Height="150" Name="ConnectionPannel"/>
                 <RowDefinition Height="50" />
                 <RowDefinition Name="ActionPannel"/>
@@ -25,9 +25,11 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition/>
+                    <RowDefinition Height="40"/>
                 </Grid.RowDefinitions>
                 <Label Background="Green" Foreground="White" Margin="0,3,0,3">Informations</Label>
                 <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
+                <Button Grid.Row="2" Name="SwitchButton" Margin="4" Click="SwitchService">Use Flicker Api</Button>
             </Grid>
             
             <Grid Grid.Row="1">
