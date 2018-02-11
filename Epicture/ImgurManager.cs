@@ -70,7 +70,7 @@ namespace Epicture
             }
         }
 
-        public async Task UploadImage(string url)
+        public bool UploadImage(string url, string title, string description)
         {
             try
             {
@@ -78,14 +78,18 @@ namespace Epicture
                 IImage image;
                 using (var fs = new FileStream(url, FileMode.Open))
                 {
-                    image = await endpoint.UploadImageStreamAsync(fs);
+                    var result = endpoint.UploadImageStreamAsync(fs, null, title, description);
+                    result.Wait();
+                    image = result.Result;
                 }
                 Console.WriteLine("Image uploaded. Image Url: " + image.Link);
+                return true;
             }
             catch (ImgurException imgurEx)
             {
                 Console.WriteLine("An error occurred uploading an image to Imgur.");
                 Console.WriteLine(imgurEx.Message);
+                return false;
             }
         }
 
