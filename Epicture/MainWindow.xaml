@@ -16,8 +16,9 @@
         <Grid Name="LeftPannel" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="120" Name="InformationPannel"/>
+                <RowDefinition Height="auto" Name="SearchSettingsPannel"/>
                 <RowDefinition Height="150" Name="ConnectionPannel"/>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Name="ActionPannel"/>
             </Grid.RowDefinitions>
 
@@ -31,8 +32,25 @@
                 <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
                 <Button Grid.Row="2" Name="SwitchButton" Margin="4" Click="SwitchService">Use Flicker Api</Button>
             </Grid>
-            
+
             <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Search Settings</Label>
+                <TextBlock Name="SearchSettings" Grid.Row="0" Margin="10,10,10,10"></TextBlock>
+
+                <CheckBox Name="SmallSearch" Grid.Row="1" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Small</CheckBox>
+                <CheckBox Name="MediumSearch" Grid.Row="2" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Medium</CheckBox>
+                <CheckBox Name="LargeSearch" Grid.Row="3" Margin="1" Background="LightGray" Click="CheckSize_Click" IsChecked="True">Large</CheckBox>
+                <CheckBox Name="AllSize" Grid.Row="4" Margin="1" Background="LightGray" Click="AllSize_Click" IsChecked="True">All sizes</CheckBox>
+            </Grid>
+
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition/>

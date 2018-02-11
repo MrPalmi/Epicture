@@ -23,6 +23,13 @@ namespace Epicture
             Init();
         }
 
+        public bool CheckSize(Photo photo)
+        {
+            if (AllSize.IsChecked == true || (LargeSearch.IsChecked == true && photo.LargeUrl != null) || (MediumSearch.IsChecked == true && photo.MediumUrl != null) || (SmallSearch.IsChecked == true && photo.SmallUrl != null))
+                return true;
+            return false;
+        }
+
         public void SearchRecent()
         {
             SearchMode();
@@ -31,16 +38,17 @@ namespace Epicture
             switch (Managers.Instance.service)
             {
                 case SERVICE.FLICKR:
-                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
+                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description | PhotoSearchExtras.LargeUrl | PhotoSearchExtras.MediumUrl | PhotoSearchExtras.SmallUrl);
 
                     foreach (Photo photo in photos)
                     {
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
+                                if (CheckSize(photo))
+                                    LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         }
-                        else
+                        else if (CheckSize(photo))
                             LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                     }
                     break;
@@ -97,7 +105,8 @@ namespace Epicture
             switch (Managers.Instance.service)
             {
                 case SERVICE.FLICKR:
-                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Safe, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+
+                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Safe, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage | PhotoSearchExtras.LargeUrl | PhotoSearchExtras.MediumUrl | PhotoSearchExtras.SmallUrl};
 
                     PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
                     foreach (Photo photo in photos)
@@ -105,9 +114,10 @@ namespace Epicture
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
+                                if (CheckSize(photo))
+                                    LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                         }
-                        else
+                        else if (CheckSize(photo))
                             LoadImage(photo.PhotoId, photo.Title, photo.Description, photo.SmallUrl, photo.MediumUrl, photo.LargeUrl);
                     }
                     break;
@@ -450,6 +460,33 @@ namespace Epicture
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             Managers.Instance.cache.SaveIndesirable();
+        }
+
+
+        private void AllSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (AllSize.IsChecked == true)
+            {
+                SmallSearch.IsChecked = true;
+                MediumSearch.IsChecked = true;
+                LargeSearch.IsChecked = true;
+            } else
+            {
+                SmallSearch.IsChecked = false;
+                MediumSearch.IsChecked = false;
+                LargeSearch.IsChecked = false;
+            }
+        }
+
+        private void CheckSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (SmallSearch.IsChecked == true && MediumSearch.IsChecked == true && LargeSearch.IsChecked == true)
+            {
+                AllSize.IsChecked = true;
+            } else
+            {
+                AllSize.IsChecked = false;
+            }
         }
 
         private void Init()
