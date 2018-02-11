@@ -1,12 +1,12 @@
-﻿using Imgur.API;
-using Imgur.API.Authentication.Impl;
+﻿using Imgur.API.Authentication.Impl;
 using Imgur.API.Endpoints.Impl;
-using Imgur.API.Enums;
-using Imgur.API.Models;
-using System;
-using System.IO;
 using System.Threading.Tasks;
+using Imgur.API.Models;
+using Imgur.API.Enums;
 using System.Windows;
+using Imgur.API;
+using System.IO;
+using System;
 
 namespace Epicture
 {
@@ -14,8 +14,8 @@ namespace Epicture
     {
         private string id = "3229ec5962e2e0f";
         private string secretId = "cacd24a3b1dc136dd1d90ced9a87499a4b2ee4b9";
-        ImgurClient Imgur;
-        IOAuth2Token accessToken;
+        public ImgurClient Imgur;
+        public IOAuth2Token accessToken;
 
         public bool Connect()
         {

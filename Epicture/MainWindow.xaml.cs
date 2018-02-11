@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using Imgur.API.Endpoints.Impl;
+using Imgur.API.Models.Impl;
+using System.Windows.Forms;
 using System.Windows;
 using FlickrNet;
 using System;
@@ -67,14 +69,14 @@ namespace Epicture
                 return;
             }
             SearchMode();
+            Pannel.Children.Clear();
 
             switch (Managers.Instance.service)
             {
                 case SERVICE.FLICKR:
-                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Safe, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
 
                     PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
-                    Pannel.Children.Clear();
                     foreach (Photo photo in photos)
                     {
                         if (!Managers.Instance.user.AllowIndesirable)
@@ -87,13 +89,52 @@ namespace Epicture
                     }
                     break;
                 case SERVICE.IMGUR:
+                    var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
+                    var result = endpoint.SearchGalleryAsync(searchTerm);
+                    result.Wait();
+                    var images = result.Result;
+                    GalleryImage tmp = new GalleryImage();
+
+                    foreach (var img in images)
+                    {
+                        if (img.GetType() == tmp.GetType())
+                        {
+                            var image = img as GalleryImage;
+                            if (!Managers.Instance.user.AllowIndesirable)
+                            {
+                                if (!Managers.Instance.cache.IsIndesirable(image.Id))
+                                    LoadImage(image);
+                            }
+                            else
+                                LoadImage(image);
+                        }
+                        else
+                        {
+                            var gallery = img as GalleryAlbum;
+                            foreach (var it in gallery.Images)
+                            {
+                                var img_ = it as GalleryImage;
+                                if (!Managers.Instance.user.AllowIndesirable)
+                                {
+                                    if (!Managers.Instance.cache.IsIndesirable(img_.Id))
+                                        LoadImage(img_);
+                                }
+                                else
+                                    LoadImage(img_);
+                            }
+                        }
+                    }
                     break;
             }
-            
             ScrollPannel.ScrollToTop();
         }
 
         public void LoadImage(Photo photo)
+        {
+            ImageInfo imgProfil = new ImageInfo(photo);
+            Pannel.Children.Add(imgProfil);
+        }
+        public void LoadImage(GalleryImage photo)
         {
             ImageInfo imgProfil = new ImageInfo(photo);
             Pannel.Children.Add(imgProfil);
@@ -137,15 +178,19 @@ namespace Epicture
                 switch (Managers.Instance.service)
                 {
                     case SERVICE.FLICKR:
-                        foreach (Photo photo in Managers.Instance.cache.Favorite)
+                        Managers.Instance.cache.Favorite.Clear();
+                        var favorite = Managers.Instance.flicker.flickr.FavoritesGetList(Managers.Instance.flicker.accessToken.UserId);
+                        foreach (var it in favorite)
                         {
+                            if (!Managers.Instance.cache.IsFavorite(it.PhotoId) && !Managers.Instance.cache.IsIndesirable(it.PhotoId))
+                                Managers.Instance.cache.Favorite.Add(it.PhotoId);
                             if (!Managers.Instance.user.AllowIndesirable)
                             {
-                                if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                    LoadImage(photo);
+                                if (!Managers.Instance.cache.IsIndesirable(it.PhotoId))
+                                    LoadImage(it);
                             }
                             else
-                                LoadImage(photo);
+                                LoadImage(it);
                         }
                         break;
                     case SERVICE.IMGUR:
@@ -308,7 +353,6 @@ namespace Epicture
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Managers.Instance.cache.SaveFavorite();
             Managers.Instance.cache.SaveIndesirable();
         }
     }
