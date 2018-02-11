@@ -31,6 +31,13 @@ namespace Epicture
             SearchRecent();
         }
 
+        public bool CheckSize(Photo photo)
+        {
+            if (AllSize.IsChecked == true || (LargeSearch.IsChecked == true && photo.LargeUrl != null) || (MediumSearch.IsChecked == true && photo.MediumUrl != null) || (SmallSearch.IsChecked == true && photo.SmallUrl != null))
+                return true;
+            return false;
+        }
+
         public void SearchRecent()
         {
             SearchMode();
@@ -39,16 +46,17 @@ namespace Epicture
             switch (Managers.Instance.service)
             {
                 case SERVICE.FLICKR:
-                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description);
+                    PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosGetRecent(Managers.Instance.nav.Page, Managers.Instance.nav.ImagePerPage, PhotoSearchExtras.Tags | PhotoSearchExtras.Description | PhotoSearchExtras.LargeUrl | PhotoSearchExtras.MediumUrl | PhotoSearchExtras.SmallUrl);
 
                     foreach (Photo photo in photos)
                     {
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo);
+                                if (CheckSize(photo))
+                                    LoadImage(photo);
                         }
-                        else
+                        else if (CheckSize(photo))
                             LoadImage(photo);
                     }
                     break;
@@ -71,7 +79,7 @@ namespace Epicture
             switch (Managers.Instance.service)
             {
                 case SERVICE.FLICKR:
-                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Description | PhotoSearchExtras.Usage };
+                    var options = new PhotoSearchOptions { Text = searchTerm, PerPage = imagePerPage, Page = numPage, SafeSearch = SafetyLevel.Restricted, Extras = PhotoSearchExtras.Description | PhotoSearchExtras.Usage | PhotoSearchExtras.LargeUrl | PhotoSearchExtras.MediumUrl | PhotoSearchExtras.SmallUrl };
 
                     PhotoCollection photos = Managers.Instance.flicker.flickr.PhotosSearch(options);
                     Pannel.Children.Clear();
@@ -80,9 +88,10 @@ namespace Epicture
                         if (!Managers.Instance.user.AllowIndesirable)
                         {
                             if (!Managers.Instance.cache.IsIndesirable(photo.PhotoId))
-                                LoadImage(photo);
+                                if (CheckSize(photo))
+                                    LoadImage(photo);
                         }
-                        else
+                        else if (CheckSize(photo))
                             LoadImage(photo);
                     }
                     break;
@@ -310,6 +319,32 @@ namespace Epicture
         {
             Managers.Instance.cache.SaveFavorite();
             Managers.Instance.cache.SaveIndesirable();
+        }
+
+        private void AllSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (AllSize.IsChecked == true)
+            {
+                SmallSearch.IsChecked = true;
+                MediumSearch.IsChecked = true;
+                LargeSearch.IsChecked = true;
+            } else
+            {
+                SmallSearch.IsChecked = false;
+                MediumSearch.IsChecked = false;
+                LargeSearch.IsChecked = false;
+            }
+        }
+
+        private void CheckSize_Click(object sender, RoutedEventArgs e)
+        {
+            if (SmallSearch.IsChecked == true && MediumSearch.IsChecked == true && LargeSearch.IsChecked == true)
+            {
+                AllSize.IsChecked = true;
+            } else
+            {
+                AllSize.IsChecked = false;
+            }
         }
     }
 }

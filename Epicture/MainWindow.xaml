@@ -16,8 +16,9 @@
         <Grid Name="LeftPannel" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="100" Name="InformationPannel"/>
+                <RowDefinition Height="auto" Name="SearchSettingsPannel"/>
                 <RowDefinition Height="150" Name="ConnectionPannel"/>
-                <RowDefinition Height="50" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Name="ActionPannel"/>
             </Grid.RowDefinitions>
 
@@ -29,8 +30,25 @@
                 <Label Background="Green" Foreground="White" Margin="0,3,0,3">Informations</Label>
                 <TextBlock Name="UserInfo" Grid.Row="1" Margin="10,10,10,10"></TextBlock>
             </Grid>
-            
+
             <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <Label Background="Green" Foreground="White" Margin="0,3,0,3">Search Settings</Label>
+                <TextBlock Name="SearchSettings" Grid.Row="0" Margin="10,10,10,10"></TextBlock>
+
+                <CheckBox Name="SmallSearch" Grid.Row="1" Margin="1" Background="LightGray" Click="CheckSize_Click">Small</CheckBox>
+                <CheckBox Name="MediumSearch" Grid.Row="2" Margin="1" Background="LightGray" Click="CheckSize_Click">Medium</CheckBox>
+                <CheckBox Name="LargeSearch" Grid.Row="3" Margin="1" Background="LightGray" Click="CheckSize_Click">Large</CheckBox>
+                <CheckBox Name="AllSize" Grid.Row="4" Margin="1" Background="LightGray" Click="AllSize_Click">All sizes</CheckBox>
+            </Grid>
+
+            <Grid Grid.Row="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
                     <RowDefinition/>
