@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using System.Windows;
 using FlickrNet;
 using System;
+using Imgur.API.Models;
+using System.Collections.Generic;
 
 namespace Epicture
 {
@@ -52,7 +54,7 @@ namespace Epicture
                     break;
                 case SERVICE.IMGUR:
                     var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
-                    var result = endpoint.GetMemesSubGalleryAsync();
+                    var result = endpoint.GetMemesSubGalleryAsync(0, Imgur.API.Enums.TimeWindow.Week, Managers.Instance.nav.Page);
                     result.Wait();
                     var list = result.Result;
 
@@ -121,7 +123,7 @@ namespace Epicture
                     break;
                 case SERVICE.IMGUR:
                     var endpoint = new GalleryEndpoint(Managers.Instance.imgur.Imgur);
-                    var result = endpoint.SearchGalleryAsync(searchTerm);
+                    var result = endpoint.SearchGalleryAsync(searchTerm, 0, Imgur.API.Enums.TimeWindow.All, Managers.Instance.nav.Page);
                     result.Wait();
                     var list = result.Result;
 
@@ -378,6 +380,7 @@ namespace Epicture
                         Managers.Instance.flicker.Upload(Filename.Text, Title.Text, Description.Text, CheckPublic.IsChecked.Value);
                         break;
                     case SERVICE.IMGUR:
+                        Managers.Instance.imgur.UploadImage(Filename.Text, Title.Text, Description.Text);
                         break;
                 }
                 
@@ -385,8 +388,11 @@ namespace Epicture
                 Filename.Text = "";
                 Title.Text = "";
                 Description.Text = "";
-                CheckPublic.IsChecked = true;
-                UploadProgress.Value = 0;
+                if (Managers.Instance.service == SERVICE.FLICKR)
+                {
+                    CheckPublic.IsChecked = true;
+                    UploadProgress.Value = 0;
+                }
             }
             catch (ArgumentException ex)
             {
@@ -413,13 +419,23 @@ namespace Epicture
             Pannel.Visibility = Visibility.Collapsed;
             ScrollPannel.Visibility = Visibility.Collapsed;
             Navigation.Visibility = Visibility.Collapsed;
-
             UploadForm.Visibility = Visibility.Visible;
+
             Filename.Text = "";
             Title.Text = "";
             Description.Text = "";
-            CheckPublic.IsChecked = true;
-            UploadProgress.Value = 0;
+            if (Managers.Instance.service == SERVICE.FLICKR)
+            {
+                CheckPublic.IsChecked = true;
+                UploadProgress.Value = 0;
+                CheckPublic.Visibility = Visibility.Visible;
+                UploadProgress.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                CheckPublic.Visibility = Visibility.Collapsed;
+                UploadProgress.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void Explore(object sender, RoutedEventArgs e)
